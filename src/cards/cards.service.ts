@@ -1,11 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { Card } from './card.model';
+import { InitialCardSeedService } from 'src/initial-card-seed/initial-card-seed.service';
+// import { Card } from './card.model';
 
 @Injectable()
 export class CardsService {
-  private cards: Card[] = [];
+  constructor(private InitialCardSeedService: InitialCardSeedService) {}
 
-  getAllCards(): Card[] {
-    return this.cards;
+  // getAllCards(): Card[] {
+  getAllCards(): any {
+    // return this.cards;
+    return this.InitialCardSeedService.seedCards();
   }
 }

@@ -1,13 +1,18 @@
 import { Controller, Get } from '@nestjs/common';
 import { CardsService } from './cards.service';
-import { Card } from './card.model';
+import { InitialCardSeedService } from 'src/initial-card-seed/initial-card-seed.service';
+// import { Card } from './card.model';
 
 @Controller('cards')
 export class CardsController {
-  constructor(private CardsService: CardsService) {}
+  constructor(
+    private CardsService: CardsService,
+    private InitialCardSeedService: InitialCardSeedService,
+  ) {}
 
   @Get()
-  getAllCards(): Card[] {
+  getAllCards(): any {
+    // getAllCards(): Card[] {
     return this.CardsService.getAllCards();
   }
 }

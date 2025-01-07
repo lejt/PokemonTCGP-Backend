@@ -21,3 +21,9 @@ export enum Energy {
   METAL = 'METAL',
   FAIRY = 'FAIRY',
 }
+
+export enum CardSet {
+  GENETIC_APEX = 'A1',
+  MYTHICAL_ISLAND = 'A1a',
+  PROMOS_A = 'P-A',
+}
