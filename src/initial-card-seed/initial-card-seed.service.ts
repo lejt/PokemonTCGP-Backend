@@ -1,33 +1,50 @@
 import { Injectable } from '@nestjs/common';
-// import { PokemonTCG } from 'pokemon-tcg-sdk-typescript';
-// import { Card, Set } from 'pokemon-tcg-sdk-typescript/dist/sdk';
 import TCGdex from '@tcgdex/sdk';
-import { CardResume, Set } from './initial-card-seed.model';
+import { CardSetRepository } from 'src/card-set/card-set.repository';
+import { CardRepository } from 'src/cards/card.repository';
 
 @Injectable()
 export class InitialCardSeedService {
-  constructor() {}
+  constructor(
+    private cardRepository: CardRepository,
+    private cardSetRepository: CardSetRepository,
+  ) {}
   tcgdex = new TCGdex('en');
 
-  private allCards: CardResume[] = [];
-  private cardSetGeneticApex: Set;
-  private cardSetMythicalIsland: Set;
-
+  // TODO: execute this function in init of application
   async seedCards(): Promise<any> {
     try {
-      this.cardSetGeneticApex = await this.tcgdex.fetch('sets', 'A1');
-      this.cardSetMythicalIsland = await this.tcgdex.fetch('sets', 'A1a');
+      const seriesData = await this.tcgdex.fetch('series', 'tcgp');
 
-      // TODO: separate cards and pack data, add to db
-      const tempCardList = this.cardSetGeneticApex;
-      return tempCardList.cards;
+      // fetch card set ids from pokemon tcg pocket
+      const setIds = seriesData.sets.map((set) => set.id);
+
+      // fetch all data related to the set and its cards
+      const setsData = await Promise.all(
+        setIds.map((setId) => this.tcgdex.fetch('sets', setId)),
+      );
+
+      // flatten nested structure to abstract card ids and set ids
+      const cardSetMapping = setsData.flatMap((set) =>
+        set.cards.map((card) => ({
+          setId: set.id,
+          cardId: card.localId,
+        })),
+      );
+
+      const cardsList = await Promise.all(
+        cardSetMapping.map((cardSet) =>
+          this.tcgdex.fetch('sets', cardSet.setId, cardSet.cardId),
+        ),
+      );
+
+      await this.cardRepository.seedCards(cardsList);
+      await this.cardSetRepository.seedSets(setsData);
+
+      return 'Succesfully seeded';
     } catch (error) {
-      return error.message;
+      console.log(`Service failed in seeding cards: ${error.message}`);
+      throw new Error('Failed to seed cards in service');
     }
   }
-
-  // async getAllSet(): Promise<Set[]> {
-  //   this.allSets = await PokemonTCG.getAllSets();
-  //   return this.allSets;
-  // }
 }

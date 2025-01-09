@@ -3,7 +3,7 @@ export interface Set {
   name: string;
   logo?: string;
   symbol?: string;
-  serie: SerieResume;
+  serie: SeriesResume;
   tcgOnline?: string;
   variants?: {
     normal?: boolean;
@@ -27,15 +27,33 @@ export interface Set {
   cards: Array<CardResume>;
 }
 
-export interface SerieResume {
-  id: string;
-  name: string;
-  logo?: string;
-}
-
 export interface CardResume {
   id: string;
   localId: string;
   name: string;
   image?: string;
+}
+
+export interface SeriesResume {
+  id: string;
+  name: string;
+  logo?: string;
+}
+
+export interface Series {
+  id: string;
+  name: string;
+  logo?: string;
+  sets: BriefSet[];
+}
+
+export interface BriefSet {
+  id: string;
+  name: string;
+  logo?: string;
+  symbol?: string;
+  cardCount: {
+    total: number;
+    official: number;
+  };
 }

@@ -1,25 +1,24 @@
-export interface Card {
-  id: string;
-  name: string;
-  description: Description[];
-  attribute: string;
+export type Description = ActionDescription[];
+interface ActionDescription {
+  action: string;
+  cost: ActionCost[];
 }
 
-export interface Description {
-  attack: number;
-  cost: Energy[];
+interface ActionCost {
+  attribute: Energy;
+  quantity: number;
 }
 
 export enum Energy {
-  GRASS = 'GRASS',
-  FIRE = 'FIRE',
-  WATER = 'WATER',
-  LIGHTNING = 'LIGHTNING',
-  PSYCHIC = 'PSYCHIC',
-  FIGHTING = 'FIGHTING',
-  DARKNESS = 'DARKNESS',
-  METAL = 'METAL',
-  FAIRY = 'FAIRY',
+  GRASS = 'grass',
+  FIRE = 'fire',
+  WATER = 'water',
+  LIGHTNING = 'lightning',
+  PSYCHIC = 'psychic',
+  FIGHTING = 'fighting',
+  DARKNESS = 'darkness',
+  METAL = 'metal',
+  FAIRY = 'fairy',
 }
 
 export enum CardSet {
