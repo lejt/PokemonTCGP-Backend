@@ -8,7 +8,14 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { CardSet } from 'src/card-set/card-set.entity';
-import { Energy } from './card.model';
+import {
+  CardNameSuffix,
+  Category,
+  Energy,
+  Rarity,
+  Stage,
+  TrainerType,
+} from './card.enum';
 
 @Entity()
 export class Card {
@@ -25,16 +32,16 @@ export class Card {
   hp?: number;
 
   @Column('simple-array', { default: [] })
-  types?: string[]; // TODO: should be ENUM
+  types?: Energy[];
 
   @Column({ default: '' })
-  stage?: string; // TODO: should be ENUM
+  stage?: Stage;
 
   @Column()
-  rarity: string; // TODO: should be ENUM
+  rarity: Rarity;
 
   @Column({ default: '' })
-  suffix?: string; // TODO: should be ENUM or one value 'EX'
+  suffix?: CardNameSuffix;
 
   @Column('json')
   variants: {
@@ -50,7 +57,7 @@ export class Card {
     name: string;
     effect: string;
     damage: number;
-    cost: string[];
+    cost: Energy[];
   }[];
 
   @Column({ default: 0 })
@@ -63,7 +70,7 @@ export class Card {
   }[];
 
   @Column()
-  category: string;
+  category: Category;
 
   @Column()
   illustrator: string;
@@ -74,6 +81,9 @@ export class Card {
   @Column({ unique: true })
   externalId?: string;
 
+  @Column({ default: '' })
+  evolveFrom?: string;
+
   // TODO: decide if needed - eager: true allows cardSet to be auto loaded as well on Card load
   @ManyToOne(() => CardSet, (cardSet) => cardSet.cards, { eager: true })
   @JoinColumn()
@@ -83,7 +93,7 @@ export class Card {
   effect?: string;
 
   @Column({ default: '' })
-  trainerType?: string;
+  trainerType?: TrainerType;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -4,6 +4,7 @@ import { Card } from './card.entity';
 import { chunk } from 'lodash';
 import { CardSetRepository } from 'src/card-set/card-set.repository';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Category } from './card.enum';
 
 @Injectable()
 export class CardRepository extends Repository<Card> {
@@ -15,11 +16,11 @@ export class CardRepository extends Repository<Card> {
     super(Card, dataSource.createEntityManager());
   }
 
+  // TODO: make more generic for all cards
   async getCards(): Promise<Card[]> {
     const cards = await this.find({
       where: {
-        // TODO: make more generic for all cards
-        category: 'Pokemon',
+        category: Category.POKEMON,
       },
     });
 
@@ -58,6 +59,7 @@ export class CardRepository extends Repository<Card> {
             illustrator: card.illustrator,
             description: card?.description,
             externalId: card.id,
+            evolveFrom: card?.evolveFrom,
             effect: card?.effect,
             trainerType: card?.trainerType,
             cardSet,
