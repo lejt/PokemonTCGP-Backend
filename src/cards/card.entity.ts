@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { CardSet } from 'src/card-set/card-set.entity';
+import { CardSet } from 'src/card-sets/card-set.entity';
 import {
   CardNameSuffix,
   Category,
@@ -16,6 +16,7 @@ import {
   Stage,
   TrainerType,
 } from './card.enum';
+import { Pack } from 'src/packs/pack.entity';
 
 @Entity()
 export class Card {
@@ -85,9 +86,20 @@ export class Card {
   evolveFrom?: string;
 
   // TODO: decide if needed - eager: true allows cardSet to be auto loaded as well on Card load
-  @ManyToOne(() => CardSet, (cardSet) => cardSet.cards, { eager: true })
+  @ManyToOne(() => CardSet, (cardSet) => cardSet.cards, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   cardSet: CardSet;
+
+  // TODO: keep nullable? or fill with default value?
+  @ManyToOne(() => Pack, (pack) => pack.cards, {
+    nullable: true,
+    eager: true,
+    onDelete: 'CASCADE',
+  })
+  pack?: Pack;
 
   @Column({ default: '' })
   effect?: string;

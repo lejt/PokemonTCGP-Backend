@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { CardSetRepository } from 'src/card-set/card-set.repository';
+import { CardSetRepository } from 'src/card-sets/card-set.repository';
 import { CardSet } from './card-set.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 

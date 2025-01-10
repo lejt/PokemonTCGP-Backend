@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import TCGdex from '@tcgdex/sdk';
-import { CardSetRepository } from 'src/card-set/card-set.repository';
+import { CardSetRepository } from 'src/card-sets/card-set.repository';
 import { CardRepository } from 'src/cards/card.repository';
 
 @Injectable()

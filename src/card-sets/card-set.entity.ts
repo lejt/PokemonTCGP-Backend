@@ -7,13 +7,13 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Card } from 'src/cards/card.entity';
+import { Pack } from 'src/packs/pack.entity';
 
 @Entity()
 export class CardSet {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // @Column()
   @Column({ unique: true })
   name: string;
 
@@ -31,6 +31,9 @@ export class CardSet {
 
   @OneToMany(() => Card, (card) => card.cardSet)
   cards: Card[];
+
+  @OneToMany(() => Pack, (pack) => pack.cardSet)
+  packs: Pack[];
 
   @CreateDateColumn()
   createdAt: Date;

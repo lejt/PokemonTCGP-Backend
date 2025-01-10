@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { Card } from './card.entity';
 import { chunk } from 'lodash';
-import { CardSetRepository } from 'src/card-set/card-set.repository';
+import { CardSetRepository } from 'src/card-sets/card-set.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './card.enum';
+import { PackRepository } from 'src/packs/pack.repository';
 
 @Injectable()
 export class CardRepository extends Repository<Card> {
@@ -12,6 +13,8 @@ export class CardRepository extends Repository<Card> {
     private dataSource: DataSource,
     @InjectRepository(CardSetRepository)
     private cardSetRepository: CardSetRepository,
+    @InjectRepository(PackRepository)
+    private packRepository: PackRepository,
   ) {
     super(Card, dataSource.createEntityManager());
   }
@@ -42,6 +45,8 @@ export class CardRepository extends Repository<Card> {
         .map(async (card) => {
           // Check if the cardSet already exists
           const cardSet = await this.cardSetRepository.findAndSaveSet(card.set);
+          // Check if the pack already exists
+          const pack = await this.packRepository.findAndSavePack(card, cardSet);
 
           return this.create({
             name: card.name,
@@ -63,6 +68,7 @@ export class CardRepository extends Repository<Card> {
             effect: card?.effect,
             trainerType: card?.trainerType,
             cardSet,
+            pack,
           });
         });
 

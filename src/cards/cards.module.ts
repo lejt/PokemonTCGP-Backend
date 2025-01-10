@@ -5,7 +5,8 @@ import { CardRepository } from './card.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Card } from './card.entity';
 import { InitialCardSeedService } from 'src/initial-card-seed/initial-card-seed.service';
-import { CardSetRepository } from 'src/card-set/card-set.repository';
+import { CardSetRepository } from 'src/card-sets/card-set.repository';
+import { PackRepository } from 'src/packs/pack.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Card])],
@@ -15,6 +16,7 @@ import { CardSetRepository } from 'src/card-set/card-set.repository';
     CardRepository,
     InitialCardSeedService,
     CardSetRepository,
+    PackRepository,
   ],
 })
 export class CardsModule {}
