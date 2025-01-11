@@ -76,6 +76,8 @@ export class CardRepository extends Repository<Card> {
       const resolvedCards = await Promise.all(mappedCards);
       if (!resolvedCards.length) return;
 
+      await console.log('Seeding cards initialized...');
+
       // Chunk save for performance as potential large dataset
       const chunks = chunk(resolvedCards, 100);
       for (const [index, batch] of chunks.entries()) {
@@ -87,6 +89,8 @@ export class CardRepository extends Repository<Card> {
           console.error(`Error saving batch ${index + 1}:`, error.message);
         }
       }
+
+      await console.log('Card and Set data seeded succesfully.');
     } catch (error) {
       console.log(`Error seeding cards in database: ${error.message}`);
       throw new Error('Failed to seed cards in database');
