@@ -1,5 +1,5 @@
-import { PACK_CARD_IDS } from 'src/constants/pack-mapping';
-import { PackNames } from 'src/packs/pack.enum';
+import { PACK_CARD_IDS } from '../constants/pack-mapping';
+import { PackNames } from '../packs/pack.enum';
 
 export const isGeneticApexPack = (cardId: string): boolean =>
   cardId.split('-')[0] === 'A1';

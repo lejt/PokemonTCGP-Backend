@@ -1,11 +1,11 @@
 import { DataSource, ILike, Repository } from 'typeorm';
 import { Pack } from './pack.entity';
 import { Injectable } from '@nestjs/common';
-import { CardSet } from 'src/card-sets/card-set.entity';
-import { getGAPackName } from 'src/utils/pack-utils';
+import { CardSet } from '../card-sets/card-set.entity';
+import { getGAPackName } from '../utils/pack-utils';
 
 @Injectable()
-export class PackRepository extends Repository<Pack> {
+export class PacksRepository extends Repository<Pack> {
   constructor(private dataSource: DataSource) {
     super(Pack, dataSource.createEntityManager());
   }

@@ -2,19 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { Card } from './card.entity';
 import { chunk } from 'lodash';
-import { CardSetRepository } from 'src/card-sets/card-set.repository';
-import { InjectRepository } from '@nestjs/typeorm';
+import { CardSetsRepository } from '../card-sets/card-sets.repository';
 import { Category } from './card.enum';
-import { PackRepository } from 'src/packs/pack.repository';
+import { PacksRepository } from '../packs/packs.repository';
 
 @Injectable()
-export class CardRepository extends Repository<Card> {
+export class CardsRepository extends Repository<Card> {
   constructor(
     private dataSource: DataSource,
-    @InjectRepository(CardSetRepository)
-    private cardSetRepository: CardSetRepository,
-    @InjectRepository(PackRepository)
-    private packRepository: PackRepository,
+    // @InjectRepository(CardSetRepository)
+    private readonly cardSetsRepository: CardSetsRepository,
+    // @InjectRepository(PackRepository)
+    private readonly packsRepository: PacksRepository,
   ) {
     super(Card, dataSource.createEntityManager());
   }
@@ -30,7 +29,7 @@ export class CardRepository extends Repository<Card> {
     return cards;
   }
 
-  async seedCards(cardsList: any): Promise<void> {
+  async saveSeedCards(cardsList: any): Promise<void> {
     try {
       // check for dups before creating/saving
       const existingCards = await this.find({
@@ -44,9 +43,14 @@ export class CardRepository extends Repository<Card> {
         })
         .map(async (card) => {
           // Check if the cardSet already exists
-          const cardSet = await this.cardSetRepository.findAndSaveSet(card.set);
+          const cardSet = await this.cardSetsRepository.findAndSaveSet(
+            card.set,
+          );
           // Check if the pack already exists
-          const pack = await this.packRepository.findAndSavePack(card, cardSet);
+          const pack = await this.packsRepository.findAndSavePack(
+            card,
+            cardSet,
+          );
 
           return this.create({
             name: card.name,

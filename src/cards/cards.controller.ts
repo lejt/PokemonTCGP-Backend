@@ -6,8 +6,8 @@ import { InitialCardSeedService } from 'src/initial-card-seed/initial-card-seed.
 @Controller('cards')
 export class CardsController {
   constructor(
-    private CardsService: CardsService,
-    private InitialCardSeedService: InitialCardSeedService,
+    private readonly CardsService: CardsService,
+    private readonly InitialCardSeedService: InitialCardSeedService,
   ) {}
 
   @Get()

@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { CardSet } from './card-set.entity';
-import { has } from 'lodash';
 
 @Injectable()
-export class CardSetRepository extends Repository<CardSet> {
+export class CardSetsRepository extends Repository<CardSet> {
   constructor(private dataSource: DataSource) {
     super(CardSet, dataSource.createEntityManager());
   }
@@ -35,7 +34,7 @@ export class CardSetRepository extends Repository<CardSet> {
   }
 
   // function is more of updating existing card set records with information not found in seedCards function
-  async seedSets(setsData: any[]): Promise<void> {
+  async saveSeedSets(setsData: any[]): Promise<void> {
     try {
       const setDataToUpdate = await Promise.all(
         setsData.map(async (set) => {

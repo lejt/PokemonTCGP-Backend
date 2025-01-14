@@ -1,10 +1,10 @@
 import { Controller, Get } from '@nestjs/common';
-import { CollectionService } from './collection.service';
+import { CollectionsService } from './collections.service';
 import { Collection } from './collection.model';
 
 @Controller('collection')
-export class CollectionController {
-  constructor(private CollectionService: CollectionService) {}
+export class CollectionsController {
+  constructor(private readonly CollectionService: CollectionsService) {}
 
   @Get()
   getCollection(): Collection[] {

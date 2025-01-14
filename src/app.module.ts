@@ -5,8 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { Card } from './cards/card.entity';
 import { CardSet } from './card-sets/card-set.entity';
-import { CardSetModule } from './card-sets/card-set.module';
-import { PackModule } from './packs/pack.module';
+import { CardSetsModule } from './card-sets/card-sets.module';
+import { PacksModule } from './packs/packs.module';
 import { Pack } from './packs/pack.entity';
 
 @Module({
@@ -27,8 +27,8 @@ import { Pack } from './packs/pack.entity';
       // ^ turn off in production to avoid accidental schema change
     }),
     CardsModule,
-    CardSetModule,
-    PackModule,
+    CardSetsModule,
+    PacksModule,
     CollectionModule,
   ],
 })

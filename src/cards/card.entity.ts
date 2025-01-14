@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { CardSet } from 'src/card-sets/card-set.entity';
+import { CardSet } from '../card-sets/card-set.entity';
 import {
   CardNameSuffix,
   Category,
@@ -16,7 +16,7 @@ import {
   Stage,
   TrainerType,
 } from './card.enum';
-import { Pack } from 'src/packs/pack.entity';
+import { Pack } from '../packs/pack.entity';
 
 @Entity()
 export class Card {

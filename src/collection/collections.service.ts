@@ -3,8 +3,8 @@ import { Collection } from './collection.model';
 import { Card } from 'src/cards/card.entity';
 
 @Injectable()
-export class CollectionService {
-  constructor(private collection: Collection = []) {}
+export class CollectionsService {
+  constructor(private readonly collection: Collection = []) {}
 
   getCollection(): Collection {
     // db pull of all user's collection

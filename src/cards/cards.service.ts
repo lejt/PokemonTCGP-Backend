@@ -4,7 +4,9 @@ import { InitialCardSeedService } from 'src/initial-card-seed/initial-card-seed.
 
 @Injectable()
 export class CardsService {
-  constructor(private InitialCardSeedService: InitialCardSeedService) {}
+  constructor(
+    private readonly InitialCardSeedService: InitialCardSeedService,
+  ) {}
 
   // getAllCards(): Card[] {
   getAllCards(): any {

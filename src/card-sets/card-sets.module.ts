@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { CardSetRepository } from 'src/card-sets/card-set.repository';
+import { CardSetsRepository } from 'src/card-sets/card-sets.repository';
 import { CardSet } from './card-set.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [TypeOrmModule.forFeature([CardSet])],
   controllers: [],
-  providers: [CardSetRepository],
+  providers: [CardSetsRepository],
 })
-export class CardSetModule {}
+export class CardSetsModule {}

@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PackRepository } from './pack.repository';
+import { PacksRepository } from './packs.repository';
 import { Pack } from './pack.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Pack])],
   controllers: [],
-  providers: [PackRepository],
+  providers: [PacksRepository],
 })
-export class PackModule {}
+export class PacksModule {}
