@@ -1,4 +1,9 @@
-import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  OnApplicationBootstrap,
+} from '@nestjs/common';
 import TCGdex from '@tcgdex/sdk';
 import { CardSetsRepository } from '../card-sets/card-sets.repository';
 import { CardsRepository } from '../cards/cards.repository';
@@ -10,7 +15,8 @@ export class InitialCardSeedService implements OnApplicationBootstrap {
     private readonly cardRepository: CardsRepository,
     private readonly cardSetRepository: CardSetsRepository,
   ) {}
-  tcgdex = new TCGdex('en');
+  private readonly tcgdex = new TCGdex('en');
+  private logger = new Logger('InitialCardSeedService');
 
   // runs this service after all modules are initialized but before rest of application loads
   async onApplicationBootstrap() {
@@ -47,8 +53,11 @@ export class InitialCardSeedService implements OnApplicationBootstrap {
       await this.cardRepository.saveSeedCards(cardsList);
       await this.cardSetRepository.saveSeedSets(setsData);
     } catch (error) {
-      console.log(`Service failed in seeding cards: ${error.message}`);
-      throw new Error('Failed to seed cards in service');
+      this.logger.error(
+        'Failed to fetch and seed cards in service',
+        error.stack,
+      );
+      throw new InternalServerErrorException(error.message);
     }
   }
 }

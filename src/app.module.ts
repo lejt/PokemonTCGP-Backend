@@ -29,7 +29,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         database: configService.get('DB_NAME'),
         entities: [Card, CardSet, Pack],
         autoLoadEntities: true, // finds entity files and auto load them
-        synchronize: true, // always keep db schema in sync so no need to manual migrate
+        synchronize: process.env.NODE_ENV === 'dev',
         // ^ turn off in production to avoid accidental schema change
       }),
     }),

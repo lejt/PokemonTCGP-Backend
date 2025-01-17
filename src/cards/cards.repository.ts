@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { Card } from './entity/card.entity';
 import { chunk } from 'lodash';
@@ -17,6 +21,7 @@ export class CardsRepository extends Repository<Card> {
   ) {
     super(Card, dataSource.createEntityManager());
   }
+  private logger = new Logger('CardsRepository', { timestamp: true });
 
   // TODO: make more generic for all cards
   async getCards(): Promise<Card[]> {
@@ -30,12 +35,17 @@ export class CardsRepository extends Repository<Card> {
   }
 
   async saveSeedCards(cardsList: any): Promise<void> {
+    this.logger.log('Starting the card, set, and pack seeding process...');
     try {
+      this.logger.log(`Received ${cardsList.length} cards for processing.`);
       // check for dups before creating/saving
       const existingCards = await this.find({
         select: ['externalId'],
       });
       const existingCardIds = existingCards.map((card) => card.externalId);
+      this.logger.log(
+        `${existingCardIds.length} existing cards found in the database.`,
+      );
 
       const mappedCards = cardsList
         .filter((card) => {
@@ -80,24 +90,30 @@ export class CardsRepository extends Repository<Card> {
       const resolvedCards = await Promise.all(mappedCards);
       if (!resolvedCards.length) return;
 
-      await console.log('Seeding cards initialized...');
+      this.logger.log(`${resolvedCards.length} new cards to save.`);
 
       // Chunk save for performance as potential large dataset
       const chunks = chunk(resolvedCards, 100);
       for (const [index, batch] of chunks.entries()) {
         try {
-          console.log(`Saving batch ${index + 1} of ${chunks.length}...`);
+          this.logger.log(`Saving batch ${index + 1} of ${chunks.length}...`);
           await this.save(batch);
-          console.log(`Batch ${index + 1} saved successfully.`);
+          this.logger.log(`Batch ${index + 1} saved successfully.`);
         } catch (error) {
-          console.error(`Error saving batch ${index + 1}:`, error.message);
+          this.logger.debug(
+            `Error saving batch ${index + 1} of ${chunks.length}, batch: ${batch}`,
+            error.stack,
+          );
+          throw new InternalServerErrorException(error.message);
         }
       }
-
-      await console.log('Card and Set data seeded succesfully.');
+      this.logger.log('Card, Set, and Pack data seeded succesfully');
     } catch (error) {
-      console.log(`Error seeding cards in database: ${error.message}`);
-      throw new Error('Failed to seed cards in database');
+      this.logger.error(
+        'Failed to seed cards, sets, and packs into database',
+        error.stack,
+      );
+      throw new InternalServerErrorException(error.message);
     }
   }
 }

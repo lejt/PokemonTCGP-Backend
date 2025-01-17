@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { CardSet } from './entity/card-set.entity';
 
@@ -7,6 +11,7 @@ export class CardSetsRepository extends Repository<CardSet> {
   constructor(private dataSource: DataSource) {
     super(CardSet, dataSource.createEntityManager());
   }
+  private logger = new Logger('CardSetsRepository', { timestamp: true });
 
   async findAndSaveSet(cardSet): Promise<CardSet> {
     if (!cardSet?.name) return;
@@ -29,12 +34,14 @@ export class CardSetsRepository extends Repository<CardSet> {
       if (error.code === '23505') {
         return await this.findOne({ where: { name: cardSet.name } });
       }
-      throw error;
+      this.logger.error(`Failed to save set: ${cardSet}`, error.stack);
+      throw new InternalServerErrorException(error.message);
     }
   }
 
   // function is more of updating existing card set records with information not found in seedCards function
   async saveSeedSets(setsData: any[]): Promise<void> {
+    this.logger.log('Starting the set update process...');
     try {
       const setDataToUpdate = await Promise.all(
         setsData.map(async (set) => {
@@ -59,9 +66,8 @@ export class CardSetsRepository extends Repository<CardSet> {
         }),
       );
       const filteredSetData = setDataToUpdate.filter((set) => set !== null);
+      this.logger.log(`${filteredSetData.length} sets need update`);
       if (!filteredSetData.length) return;
-
-      await console.log('Updating set initialized...');
 
       for (const setToBeUpdated of filteredSetData) {
         await this.upsert(setToBeUpdated, {
@@ -69,9 +75,10 @@ export class CardSetsRepository extends Repository<CardSet> {
           skipUpdateIfNoValuesChanged: true,
         });
       }
-      await console.log('Sets updated succesfully.');
+      this.logger.log('Sets updated succesfully.');
     } catch (error) {
-      throw new Error(`Failed to seed/update card sets: ${error.message}`);
+      this.logger.error(`Failed to update set data: ${setsData}`, error.stack);
+      throw new InternalServerErrorException(error.message);
     }
   }
 }
