@@ -1,5 +1,5 @@
-import { CardSet } from '../card-sets/card-set.entity';
-import { Card } from '../cards/card.entity';
+import { CardSet } from '../../card-sets/entity/card-set.entity';
+import { Card } from '../../cards/entity/card.entity';
 import {
   Column,
   CreateDateColumn,

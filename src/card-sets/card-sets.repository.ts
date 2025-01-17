@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
-import { CardSet } from './card-set.entity';
+import { CardSet } from './entity/card-set.entity';
 
 @Injectable()
 export class CardSetsRepository extends Repository<CardSet> {

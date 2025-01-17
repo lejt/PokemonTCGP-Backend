@@ -6,8 +6,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Card } from '../cards/card.entity';
-import { Pack } from '../packs/pack.entity';
+import { Card } from '../../cards/entity/card.entity';
+import { Pack } from '../../packs/entity/pack.entity';
 
 @Entity()
 export class CardSet {

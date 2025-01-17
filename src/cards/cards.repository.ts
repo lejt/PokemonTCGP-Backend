@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
-import { Card } from './card.entity';
+import { Card } from './entity/card.entity';
 import { chunk } from 'lodash';
 import { CardSetsRepository } from '../card-sets/card-sets.repository';
-import { Category } from './card.enum';
+import { Category } from './interfaces/card.enum';
 import { PacksRepository } from '../packs/packs.repository';
 
 @Injectable()

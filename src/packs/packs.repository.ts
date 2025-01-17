@@ -1,7 +1,7 @@
 import { DataSource, ILike, Repository } from 'typeorm';
-import { Pack } from './pack.entity';
+import { Pack } from './entity/pack.entity';
 import { Injectable } from '@nestjs/common';
-import { CardSet } from '../card-sets/card-set.entity';
+import { CardSet } from '../card-sets/entity/card-set.entity';
 import { getGAPackName } from '../utils/pack-utils';
 
 @Injectable()
