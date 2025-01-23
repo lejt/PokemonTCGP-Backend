@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -17,6 +18,7 @@ import {
   TrainerType,
 } from '../interfaces/card.enum';
 import { Pack } from '../../packs/entity/pack.entity';
+import { User } from '../../users/entity/user.entity';
 
 @Entity()
 export class Card {
@@ -112,4 +114,8 @@ export class Card {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ManyToMany(() => User, (user) => user.ownedCards)
+  // // @Exclude({ toPlainOnly: true })
+  owners: User[];
 }

@@ -1,18 +1,15 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { CardsService } from './cards.service';
-import { InitialCardSeedService } from 'src/initial-card-seed/initial-card-seed.service';
-// import { Card } from './card.model';
+import { AuthGuard } from '@nestjs/passport';
+import { UserAuthGuard } from 'src/auth/guards/user-auth.guard';
 
 @Controller('cards')
+@UseGuards(AuthGuard(), UserAuthGuard)
 export class CardsController {
-  constructor(
-    private readonly CardsService: CardsService,
-    private readonly InitialCardSeedService: InitialCardSeedService,
-  ) {}
+  constructor(private readonly CardsService: CardsService) {}
 
   @Get()
-  getAllCards(): any {
-    // getAllCards(): Card[] {
-    return this.CardsService.getAllCards();
+  getAllCards(): Promise<number[]> {
+    return this.CardsService.getAllCardIds();
   }
 }

@@ -9,6 +9,8 @@ import { PacksModule } from './packs/packs.module';
 import { Pack } from './packs/entity/pack.entity';
 import { configurationValidationSchema } from './config/config.schema';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -37,6 +39,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     CardSetsModule,
     PacksModule,
     CollectionModule,
+    AuthModule,
+    UsersModule,
   ],
 })
 export class AppModule {}

@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { CardSet } from './entity/card-set.entity';
+import { ERROR_MESSAGES } from 'src/constants/error-codes-and-messages';
 
 @Injectable()
 export class CardSetsRepository extends Repository<CardSet> {
@@ -35,7 +36,7 @@ export class CardSetsRepository extends Repository<CardSet> {
         return await this.findOne({ where: { name: cardSet.name } });
       }
       this.logger.error(`Failed to save set: ${cardSet}`, error.stack);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(ERROR_MESSAGES.SEED_SAVE_FAILURE);
     }
   }
 
@@ -78,7 +79,7 @@ export class CardSetsRepository extends Repository<CardSet> {
       this.logger.log('Sets updated succesfully.');
     } catch (error) {
       this.logger.error(`Failed to update set data: ${setsData}`, error.stack);
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(ERROR_MESSAGES.SEED_SAVE_FAILURE);
     }
   }
 }

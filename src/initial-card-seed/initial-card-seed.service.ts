@@ -8,6 +8,7 @@ import TCGdex from '@tcgdex/sdk';
 import { CardSetsRepository } from '../card-sets/card-sets.repository';
 import { CardsRepository } from '../cards/cards.repository';
 import { Series, Set, SetResume, Card } from './external-data.interface';
+import { ERROR_MESSAGES } from 'src/constants/error-codes-and-messages';
 
 @Injectable()
 export class InitialCardSeedService implements OnApplicationBootstrap {
@@ -54,10 +55,10 @@ export class InitialCardSeedService implements OnApplicationBootstrap {
       await this.cardSetRepository.saveSeedSets(setsData);
     } catch (error) {
       this.logger.error(
-        'Failed to fetch and seed cards in service',
+        'Failed to fetch and seed cards, packs, and sets in service',
         error.stack,
       );
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(ERROR_MESSAGES.SEED_SAVE_FAILURE);
     }
   }
 }

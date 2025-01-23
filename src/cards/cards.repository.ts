@@ -7,31 +7,25 @@ import { DataSource, Repository } from 'typeorm';
 import { Card } from './entity/card.entity';
 import { chunk } from 'lodash';
 import { CardSetsRepository } from '../card-sets/card-sets.repository';
-import { Category } from './interfaces/card.enum';
 import { PacksRepository } from '../packs/packs.repository';
+import { ERROR_MESSAGES } from '../constants/error-codes-and-messages';
+import { UsersRepository } from 'src/users/users.repository';
 
 @Injectable()
 export class CardsRepository extends Repository<Card> {
   constructor(
     private dataSource: DataSource,
-    // @InjectRepository(CardSetRepository)
     private readonly cardSetsRepository: CardSetsRepository,
-    // @InjectRepository(PackRepository)
     private readonly packsRepository: PacksRepository,
+    private readonly usersRepository: UsersRepository,
   ) {
     super(Card, dataSource.createEntityManager());
   }
   private logger = new Logger('CardsRepository', { timestamp: true });
 
-  // TODO: make more generic for all cards
-  async getCards(): Promise<Card[]> {
-    const cards = await this.find({
-      where: {
-        category: Category.POKEMON,
-      },
-    });
-
-    return cards;
+  async getCardIds(): Promise<number[]> {
+    const cards = await this.find({ select: ['id'] });
+    return cards.map((card) => card.id);
   }
 
   async saveSeedCards(cardsList: any): Promise<void> {
@@ -104,7 +98,9 @@ export class CardsRepository extends Repository<Card> {
             `Error saving batch ${index + 1} of ${chunks.length}, batch: ${batch}`,
             error.stack,
           );
-          throw new InternalServerErrorException(error.message);
+          throw new InternalServerErrorException(
+            ERROR_MESSAGES.SEED_SAVE_FAILURE,
+          );
         }
       }
       this.logger.log('Card, Set, and Pack data seeded succesfully');
@@ -113,7 +109,7 @@ export class CardsRepository extends Repository<Card> {
         'Failed to seed cards, sets, and packs into database',
         error.stack,
       );
-      throw new InternalServerErrorException(error.message);
+      throw new InternalServerErrorException(ERROR_MESSAGES.SEED_SAVE_FAILURE);
     }
   }
 }

@@ -1,18 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { InitialCardSeedService } from 'src/initial-card-seed/initial-card-seed.service';
-// import { Card } from './card.model';
+import { CardsRepository } from './cards.repository';
 
 @Injectable()
 export class CardsService {
-  constructor(
-    private readonly InitialCardSeedService: InitialCardSeedService,
-  ) {}
+  constructor(private readonly cardsRepository: CardsRepository) {}
 
-  // getAllCards(): Card[] {
-  getAllCards(): any {
-    // return this.cards;
-    return this.InitialCardSeedService.seedCards();
+  getAllCardIds(): Promise<number[]> {
+    return this.cardsRepository.getCardIds();
   }
 }
-
-// postgres on post 5632

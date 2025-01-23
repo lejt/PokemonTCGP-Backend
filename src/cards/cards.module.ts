@@ -7,9 +7,11 @@ import { Card } from './entity/card.entity';
 import { InitialCardSeedService } from 'src/initial-card-seed/initial-card-seed.service';
 import { CardSetsRepository } from 'src/card-sets/card-sets.repository';
 import { PacksRepository } from 'src/packs/packs.repository';
+import { AuthModule } from 'src/auth/auth.module';
+import { UsersRepository } from 'src/users/users.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Card])],
+  imports: [TypeOrmModule.forFeature([Card]), AuthModule],
   controllers: [CardsController],
   providers: [
     CardsService,
@@ -17,6 +19,7 @@ import { PacksRepository } from 'src/packs/packs.repository';
     InitialCardSeedService,
     CardSetsRepository,
     PacksRepository,
+    UsersRepository,
   ],
 })
 export class CardsModule {}
