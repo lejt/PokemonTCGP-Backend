@@ -4,20 +4,18 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { UsersRepository } from '../../users/users.repository';
 import { ERROR_MESSAGES } from 'src/constants/error-codes-and-messages';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class UserAuthGuard implements CanActivate {
-  constructor(private readonly usersRepository: UsersRepository) {}
+  constructor(private readonly usersService: UsersService) {}
 
   // TODO - bug: currently, a user may use another authorized bearer token to make calls
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
-    const existingUser = await this.usersRepository.findOne({
-      where: { id: user?.id },
-    });
+    const existingUser = await this.usersService.findByUsername(user?.username);
     if (!existingUser) {
       throw new NotFoundException(ERROR_MESSAGES.USER_NOT_FOUND);
     }

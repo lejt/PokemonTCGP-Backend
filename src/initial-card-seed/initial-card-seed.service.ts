@@ -51,6 +51,7 @@ export class InitialCardSeedService implements OnApplicationBootstrap {
         ),
       );
 
+      // TODO: replace with service call instead of repository call
       await this.cardRepository.saveSeedCards(cardsList);
       await this.cardSetRepository.saveSeedSets(setsData);
     } catch (error) {

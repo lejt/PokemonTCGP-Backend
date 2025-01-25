@@ -11,11 +11,17 @@ import * as bcryptjs from 'bcryptjs';
 import {
   ERROR_CODES,
   ERROR_MESSAGES,
-} from 'src/constants/error-codes-and-messages';
+} from '../constants/error-codes-and-messages';
+import { CardsService } from 'src/cards/cards.service';
+import { UserCardsService } from './user-card/user-cards.service';
 
 @Injectable()
 export class UsersRepository extends Repository<User> {
-  constructor(private dataSource: DataSource) {
+  constructor(
+    private dataSource: DataSource,
+    private readonly cardsService: CardsService,
+    private readonly userCardsService: UserCardsService,
+  ) {
     super(User, dataSource.createEntityManager());
   }
   private logger = new Logger('UsersRepository', { timestamp: true });
@@ -53,10 +59,27 @@ export class UsersRepository extends Repository<User> {
   }
 
   async addCardToUser(userId: string, cardId: number): Promise<void> {
-    // confirm user and find all owned cards
-    // find card to be added via id
-    // user.ownedCards.push(card)
-    // await this.usersRepository.save(user)
+    const user = await this.findOne({
+      where: { id: userId },
+      relations: ['userCards', 'userCards.card'],
+    });
+    if (!user) return;
+    const card = await this.cardsService.findCardById(cardId);
+    if (!card) return;
+
+    const existingUserCard = user.userCards.find(
+      (userCard) => userCard.card.id === card.id,
+    );
+    if (user.userCards.length === 0 || !existingUserCard) {
+      this.userCardsService.createAndSaveCardToUser({
+        user,
+        card,
+        quantity: 1,
+      });
+    } else {
+      existingUserCard.quantity++;
+      await this.userCardsService.saveCardToUser(existingUserCard);
+    }
   }
 
   // create another function for multiple card adds?

@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { CardsModule } from './cards/cards.module';
-import { CollectionModule } from './collection/collection.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Card } from './cards/entity/card.entity';
 import { CardSet } from './card-sets/entity/card-set.entity';
@@ -9,8 +8,8 @@ import { PacksModule } from './packs/packs.module';
 import { Pack } from './packs/entity/pack.entity';
 import { configurationValidationSchema } from './config/config.schema';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
+import { UserCard } from './users/user-card/user-card.entity';
+import { User } from './users/entity/user.entity';
 
 @Module({
   imports: [
@@ -29,7 +28,7 @@ import { UsersModule } from './users/users.module';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [Card, CardSet, Pack],
+        entities: [Card, CardSet, Pack, UserCard, User],
         autoLoadEntities: true, // finds entity files and auto load them
         synchronize: process.env.NODE_ENV === 'dev',
         // ^ turn off in production to avoid accidental schema change
@@ -38,9 +37,6 @@ import { UsersModule } from './users/users.module';
     CardsModule,
     CardSetsModule,
     PacksModule,
-    CollectionModule,
-    AuthModule,
-    UsersModule,
   ],
 })
 export class AppModule {}

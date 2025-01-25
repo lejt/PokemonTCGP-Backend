@@ -1,4 +1,10 @@
-import { Controller, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Controller,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/decorator/get-user.decorator';
 import { UserAuthGuard } from 'src/auth/guards/user-auth.guard';
@@ -12,9 +18,14 @@ export class UsersController {
 
   @Post('me/cards/:cardId')
   async addCardToUser(
-    @Param('cardId') cardId: number,
+    @Param('cardId') cardId: string,
     @GetUser() user: UserDto,
   ): Promise<any> {
-    this.usersService.addCardToUser(user.id, cardId);
+    const parsedCardId = parseInt(cardId, 10);
+    if (isNaN(parsedCardId)) {
+      // TODO: too specific to throw back as response
+      throw new BadRequestException('Invalid cardId, must be a number');
+    }
+    return this.usersService.addCardToUser(user.id, parsedCardId);
   }
 }

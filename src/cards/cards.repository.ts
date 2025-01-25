@@ -6,18 +6,20 @@ import {
 import { DataSource, Repository } from 'typeorm';
 import { Card } from './entity/card.entity';
 import { chunk } from 'lodash';
-import { CardSetsRepository } from '../card-sets/card-sets.repository';
-import { PacksRepository } from '../packs/packs.repository';
 import { ERROR_MESSAGES } from '../constants/error-codes-and-messages';
-import { UsersRepository } from 'src/users/users.repository';
+import { CardSetsService } from '../card-sets/card-sets.service';
+import { PacksService } from '../packs/packs.service';
+import {
+  Card as ExternalCard,
+  SetResume,
+} from 'src/initial-card-seed/external-data.interface';
 
 @Injectable()
 export class CardsRepository extends Repository<Card> {
   constructor(
     private dataSource: DataSource,
-    private readonly cardSetsRepository: CardSetsRepository,
-    private readonly packsRepository: PacksRepository,
-    private readonly usersRepository: UsersRepository,
+    private readonly cardSetsService: CardSetsService,
+    private readonly packsService: PacksService,
   ) {
     super(Card, dataSource.createEntityManager());
   }
@@ -28,7 +30,7 @@ export class CardsRepository extends Repository<Card> {
     return cards.map((card) => card.id);
   }
 
-  async saveSeedCards(cardsList: any): Promise<void> {
+  async saveSeedCards(cardsList: ExternalCard<SetResume>[]): Promise<void> {
     this.logger.log('Starting the card, set, and pack seeding process...');
     try {
       this.logger.log(`Received ${cardsList.length} cards for processing.`);
@@ -47,14 +49,9 @@ export class CardsRepository extends Repository<Card> {
         })
         .map(async (card) => {
           // Check if the cardSet already exists
-          const cardSet = await this.cardSetsRepository.findAndSaveSet(
-            card.set,
-          );
+          const cardSet = await this.cardSetsService.findAndSaveSet(card.set);
           // Check if the pack already exists
-          const pack = await this.packsRepository.findAndSavePack(
-            card,
-            cardSet,
-          );
+          const pack = await this.packsService.findAndSavePack(card, cardSet);
 
           return this.create({
             name: card.name,
@@ -67,7 +64,7 @@ export class CardsRepository extends Repository<Card> {
             variants: card.variants,
             attacks: card?.attacks,
             retreat: card?.retreat,
-            weakness: card?.weakness,
+            weakness: card?.weaknesses,
             category: card.category,
             illustrator: card.illustrator,
             description: card?.description,
@@ -77,7 +74,7 @@ export class CardsRepository extends Repository<Card> {
             trainerType: card?.trainerType,
             cardSet,
             pack,
-          });
+          } as Card);
         });
 
       // Wait for all card processing to complete

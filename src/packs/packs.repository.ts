@@ -3,6 +3,7 @@ import { Pack } from './entity/pack.entity';
 import { Injectable } from '@nestjs/common';
 import { CardSet } from '../card-sets/entity/card-set.entity';
 import { getGAPackName } from '../utils/pack-utils';
+import { Card } from 'src/initial-card-seed/external-data.interface';
 
 @Injectable()
 export class PacksRepository extends Repository<Pack> {
@@ -10,19 +11,13 @@ export class PacksRepository extends Repository<Pack> {
     super(Pack, dataSource.createEntityManager());
   }
 
-  async getPacks(): Promise<Pack[]> {
-    const packs = [];
-
-    return packs;
-  }
-
-  async findPackByName(packName): Promise<Pack> {
+  async findPackByName(packName: string): Promise<Pack> {
     return await this.findOne({
       where: { name: ILike(`%${packName}%`) },
     });
   }
 
-  async findAndSavePack(card, cardSet: CardSet): Promise<Pack> {
+  async findAndSavePack(card: Card, cardSet: CardSet): Promise<Pack> {
     const packName = getGAPackName(card.id);
     if (!packName) return;
 

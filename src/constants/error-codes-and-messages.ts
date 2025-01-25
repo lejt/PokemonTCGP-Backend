@@ -2,7 +2,6 @@ export const ERROR_CODES = {
   UNIQUE_VIOLATION: '23505',
 };
 
-// throw error messages
 export const ERROR_MESSAGES = {
   USER_CREATION_FAILURE: 'An error occured during user registration',
   USER_ALREADY_EXISTS: 'Username already exists',

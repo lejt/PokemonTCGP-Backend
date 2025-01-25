@@ -1,7 +1,4 @@
 // Following interfaces copied from TCGDex SDK as their models were not exposed
-
-import TCGdex from '@tcgdex/sdk';
-
 export interface SetResume {
   id: string;
   name: string;

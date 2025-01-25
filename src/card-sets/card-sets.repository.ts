@@ -6,6 +6,7 @@ import {
 import { DataSource, Repository } from 'typeorm';
 import { CardSet } from './entity/card-set.entity';
 import { ERROR_MESSAGES } from 'src/constants/error-codes-and-messages';
+import { Set, SetResume } from 'src/initial-card-seed/external-data.interface';
 
 @Injectable()
 export class CardSetsRepository extends Repository<CardSet> {
@@ -14,7 +15,7 @@ export class CardSetsRepository extends Repository<CardSet> {
   }
   private logger = new Logger('CardSetsRepository', { timestamp: true });
 
-  async findAndSaveSet(cardSet): Promise<CardSet> {
+  async findAndSaveSet(cardSet: SetResume): Promise<CardSet> {
     if (!cardSet?.name) return;
 
     const foundSet = await this.findOne({
@@ -41,7 +42,7 @@ export class CardSetsRepository extends Repository<CardSet> {
   }
 
   // function is more of updating existing card set records with information not found in seedCards function
-  async saveSeedSets(setsData: any[]): Promise<void> {
+  async saveSeedSets(setsData: Set[]): Promise<void> {
     this.logger.log('Starting the set update process...');
     try {
       const setDataToUpdate = await Promise.all(

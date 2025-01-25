@@ -1,11 +1,5 @@
-import { Card } from '../../cards/entity/card.entity';
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { UserCard } from '../user-card/user-card.entity';
 
 @Entity()
 export class User {
@@ -19,7 +13,9 @@ export class User {
   password: string;
 
   // relationship to cards
-  @ManyToMany(() => Card, (card) => card.owners, { cascade: true })
-  @JoinTable()
-  ownedCards: Card[];
+  @OneToMany(() => UserCard, (userCard) => userCard.user, {
+    cascade: true,
+    eager: true,
+  })
+  userCards: UserCard[];
 }

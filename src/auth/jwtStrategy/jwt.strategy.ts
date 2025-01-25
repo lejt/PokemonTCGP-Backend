@@ -1,17 +1,17 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { UsersRepository } from '../../users/users.repository';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { JwtPayload } from '../interface/jwt-payload.interface';
 import { User } from '../../users/entity/user.entity';
 import { plainToInstance } from 'class-transformer';
-import { UserDto } from 'src/users/dto/user.dto';
+import { UserDto } from '../../users/dto/user.dto';
+import { UsersService } from '../../users/users.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
-    private readonly usersRepository: UsersRepository,
+    private readonly usersService: UsersService,
     private readonly configService: ConfigService,
   ) {
     super({
@@ -23,9 +23,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   // on each request that requires a token, user will be checked
   async validate(payload: JwtPayload): Promise<UserDto> {
     const { username } = payload;
-    const user: User = await this.usersRepository.findOne({
-      where: { username },
-    });
+    const user: User = await this.usersService.findByUsername(username);
 
     if (!user) {
       throw new UnauthorizedException();
