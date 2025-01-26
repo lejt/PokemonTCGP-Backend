@@ -8,7 +8,7 @@ import TCGdex from '@tcgdex/sdk';
 import { CardSetsRepository } from '../card-sets/card-sets.repository';
 import { CardsRepository } from '../cards/cards.repository';
 import { Series, Set, SetResume, Card } from './external-data.interface';
-import { ERROR_MESSAGES } from 'src/constants/error-codes-and-messages';
+import { ERROR_MESSAGES } from '../constants/error-codes-and-messages';
 
 @Injectable()
 export class InitialCardSeedService implements OnApplicationBootstrap {

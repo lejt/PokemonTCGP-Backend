@@ -12,7 +12,7 @@ import { PacksService } from '../packs/packs.service';
 import {
   Card as ExternalCard,
   SetResume,
-} from 'src/initial-card-seed/external-data.interface';
+} from '../initial-card-seed/external-data.interface';
 
 @Injectable()
 export class CardsRepository extends Repository<Card> {

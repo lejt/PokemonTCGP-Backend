@@ -8,7 +8,7 @@ import { PacksModule } from './packs/packs.module';
 import { Pack } from './packs/entity/pack.entity';
 import { configurationValidationSchema } from './config/config.schema';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UserCard } from './users/user-card/user-card.entity';
+import { UserCard } from './user-cards/entity/user-card.entity';
 import { User } from './users/entity/user.entity';
 
 @Module({

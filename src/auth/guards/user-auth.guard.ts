@@ -4,8 +4,8 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { ERROR_MESSAGES } from 'src/constants/error-codes-and-messages';
-import { UsersService } from 'src/users/users.service';
+import { ERROR_MESSAGES } from '../../constants/error-codes-and-messages';
+import { UsersService } from '../../users/users.service';
 
 @Injectable()
 export class UserAuthGuard implements CanActivate {

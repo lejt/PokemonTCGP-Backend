@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { UserCard } from '../user-card/user-card.entity';
+import { UserCard } from '../../user-cards/entity/user-card.entity';
 
 @Entity()
 export class User {
@@ -15,7 +15,7 @@ export class User {
   // relationship to cards
   @OneToMany(() => UserCard, (userCard) => userCard.user, {
     cascade: true,
-    eager: true,
+    eager: true, // loads userCards by default with the user
   })
   userCards: UserCard[];
 }

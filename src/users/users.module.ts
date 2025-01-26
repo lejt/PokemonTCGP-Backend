@@ -6,7 +6,7 @@ import { User } from './entity/user.entity';
 import { UsersService } from './users.service';
 import { PassportModule } from '@nestjs/passport';
 import { CardsModule } from '../cards/cards.module';
-import { UserCardsModule } from './user-card/user-cards.module';
+import { UserCardsModule } from '../user-cards/user-cards.module';
 
 @Module({
   imports: [

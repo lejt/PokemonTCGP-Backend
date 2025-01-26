@@ -1,7 +1,7 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { CardsService } from './cards.service';
 import { AuthGuard } from '@nestjs/passport';
-import { UserAuthGuard } from 'src/auth/guards/user-auth.guard';
+import { UserAuthGuard } from '../auth/guards/user-auth.guard';
 
 @Controller('cards')
 @UseGuards(AuthGuard(), UserAuthGuard)

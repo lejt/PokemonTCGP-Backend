@@ -2,15 +2,17 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from '../entity/user.entity';
-import { Card } from 'src/cards/entity/card.entity';
+import { User } from '../../users/entity/user.entity';
+import { Card } from '../../cards/entity/card.entity';
 
 @Entity()
+@Index(['user', 'card'])
 export class UserCard {
   @PrimaryGeneratedColumn('uuid')
   id: string;

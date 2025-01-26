@@ -18,7 +18,7 @@ import {
   TrainerType,
 } from '../interfaces/card.enum';
 import { Pack } from '../../packs/entity/pack.entity';
-import { UserCard } from 'src/users/user-card/user-card.entity';
+import { UserCard } from '../../user-cards/entity/user-card.entity';
 
 @Entity()
 export class Card {

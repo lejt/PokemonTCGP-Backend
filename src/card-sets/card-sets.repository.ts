@@ -5,8 +5,8 @@ import {
 } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { CardSet } from './entity/card-set.entity';
-import { ERROR_MESSAGES } from 'src/constants/error-codes-and-messages';
-import { Set, SetResume } from 'src/initial-card-seed/external-data.interface';
+import { ERROR_MESSAGES } from '../constants/error-codes-and-messages';
+import { Set, SetResume } from '../initial-card-seed/external-data.interface';
 
 @Injectable()
 export class CardSetsRepository extends Repository<CardSet> {

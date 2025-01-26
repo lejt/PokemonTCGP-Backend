@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CardSetsRepository } from './card-sets.repository';
 import { CardSet } from './entity/card-set.entity';
-import { Set, SetResume } from 'src/initial-card-seed/external-data.interface';
+import { Set, SetResume } from '../initial-card-seed/external-data.interface';
 
 @Injectable()
 export class CardSetsService {

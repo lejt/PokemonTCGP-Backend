@@ -5,6 +5,7 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  NotFoundException,
 } from '@nestjs/common';
 import { AuthCredentialsDto } from '../auth/dto/auth-credentials-dto';
 import * as bcryptjs from 'bcryptjs';
@@ -12,8 +13,8 @@ import {
   ERROR_CODES,
   ERROR_MESSAGES,
 } from '../constants/error-codes-and-messages';
-import { CardsService } from 'src/cards/cards.service';
-import { UserCardsService } from './user-card/user-cards.service';
+import { CardsService } from '../cards/cards.service';
+import { UserCardsService } from '../user-cards/user-cards.service';
 
 @Injectable()
 export class UsersRepository extends Repository<User> {
@@ -25,6 +26,15 @@ export class UsersRepository extends Repository<User> {
     super(User, dataSource.createEntityManager());
   }
   private logger = new Logger('UsersRepository', { timestamp: true });
+
+  async findUserById(userId: string): Promise<User> {
+    const user = await this.findOne({
+      where: { id: userId },
+      relations: ['userCards', 'userCards.card'],
+    });
+
+    return user;
+  }
 
   async createUser(authCredentialsDto: AuthCredentialsDto): Promise<void> {
     const { username, password } = authCredentialsDto;
@@ -59,28 +69,45 @@ export class UsersRepository extends Repository<User> {
   }
 
   async addCardToUser(userId: string, cardId: number): Promise<void> {
-    const user = await this.findOne({
-      where: { id: userId },
-      relations: ['userCards', 'userCards.card'],
-    });
-    if (!user) return;
-    const card = await this.cardsService.findCardById(cardId);
-    if (!card) return;
-
-    const existingUserCard = user.userCards.find(
-      (userCard) => userCard.card.id === card.id,
-    );
-    if (user.userCards.length === 0 || !existingUserCard) {
-      this.userCardsService.createAndSaveCardToUser({
-        user,
-        card,
-        quantity: 1,
-      });
-    } else {
-      existingUserCard.quantity++;
-      await this.userCardsService.saveCardToUser(existingUserCard);
+    const user = await this.findUserById(userId);
+    if (!user) {
+      this.logger.warn(
+        `User with id: ${userId} not found in card adding process`,
+      );
+      throw new NotFoundException(ERROR_MESSAGES.USER_NOT_FOUND);
     }
+
+    const card = await this.cardsService.findCardById(cardId);
+    if (!card) {
+      this.logger.warn(
+        `Card with id: ${cardId} not found in card adding process`,
+      );
+      throw new Error(ERROR_MESSAGES.CARD_NOT_FOUND);
+    }
+
+    this.userCardsService.addOrUpdateUserCard(user, card);
   }
 
-  // create another function for multiple card adds?
+  async addMultipleCardsToUser(
+    userId: string,
+    cardIds: number[],
+  ): Promise<void> {
+    const user = await this.findUserById(userId);
+    if (!user) {
+      this.logger.warn(
+        `User with id: ${userId} not found in card adding process`,
+      );
+      throw new NotFoundException(ERROR_MESSAGES.USER_NOT_FOUND);
+    }
+
+    const cards = await this.cardsService.findCardsByIds(cardIds);
+    if (!cards.length) {
+      this.logger.warn(
+        `Cards with ids: ${cardIds} not found in card adding process`,
+      );
+      throw new Error(ERROR_MESSAGES.CARD_NOT_FOUND);
+    }
+
+    this.userCardsService.addMultipleUserCards(user, cards);
+  }
 }

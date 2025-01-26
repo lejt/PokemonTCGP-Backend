@@ -18,4 +18,11 @@ export class UsersService {
   async addCardToUser(userId: string, cardId: number): Promise<void> {
     return this.usersRepository.addCardToUser(userId, cardId);
   }
+
+  async addMultipleCardsToUser(
+    userId: string,
+    cardIds: number[],
+  ): Promise<void> {
+    return this.usersRepository.addMultipleCardsToUser(userId, cardIds);
+  }
 }
