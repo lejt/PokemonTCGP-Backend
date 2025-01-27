@@ -3,10 +3,18 @@ import { CardsRepository } from './cards.repository';
 import { Card } from './entity/card.entity';
 import { In } from 'typeorm';
 import { ERROR_MESSAGES } from '../constants/error-codes-and-messages';
+import { CardSetsService } from '../card-sets/card-sets.service';
+import {
+  SetResume,
+  Card as ExternalCard,
+} from 'src/initial-card-seed/external-data.interface';
 
 @Injectable()
 export class CardsService {
-  constructor(private readonly cardsRepository: CardsRepository) {}
+  constructor(
+    private readonly cardsRepository: CardsRepository,
+    private readonly cardSetsService: CardSetsService,
+  ) {}
   private logger = new Logger('CardsService');
 
   async getAllCardIds(): Promise<number[]> {
@@ -18,7 +26,6 @@ export class CardsService {
   }
 
   async findCardsByIds(cardIds: number[]): Promise<Card[] | null> {
-    // return this.cardsRepository.findBy({ id: In(cardIds) });
     if (!cardIds.length) return null;
 
     // fetch unique card Ids, typeORM .find only performs unique searches
@@ -37,5 +44,9 @@ export class CardsService {
     });
 
     return result;
+  }
+
+  async saveSeedCards(cardsList: ExternalCard<SetResume>[]): Promise<void> {
+    return this.cardsRepository.saveSeedCards(cardsList);
   }
 }

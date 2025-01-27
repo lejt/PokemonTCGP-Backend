@@ -33,6 +33,31 @@ export enum Rarity {
   NONE = 'None',
 }
 
+export const RarityOrder: { [key in Rarity]: number } = {
+  [Rarity.ONE_DIAMOND]: 0,
+  [Rarity.TWO_DIAMOND]: 1,
+  [Rarity.THREE_DIAMOND]: 2,
+  [Rarity.FOUR_DIAMOND]: 3,
+  [Rarity.ONE_STAR]: 4,
+  [Rarity.TWO_STAR]: 5,
+  [Rarity.THREE_STAR]: 6,
+  [Rarity.CROWN]: 7,
+  [Rarity.NONE]: 8, // Always last
+};
+
+export const EnergyOrder: { [key in Energy]: number } = {
+  [Energy.GRASS]: 0,
+  [Energy.FIRE]: 1,
+  [Energy.WATER]: 2,
+  [Energy.LIGHTNING]: 3,
+  [Energy.PSYCHIC]: 4,
+  [Energy.FIGHTING]: 5,
+  [Energy.DARKNESS]: 6,
+  [Energy.METAL]: 7,
+  [Energy.FAIRY]: 8,
+  [Energy.COLORLESS]: 9,
+};
+
 export enum Stage {
   BASIC = 'Basic',
   STAGE_1 = 'Stage1',

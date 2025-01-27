@@ -12,6 +12,10 @@ export class PacksService {
     return this.packsRepository.findPackByName(packName);
   }
 
+  async findPackById(id: number): Promise<Pack> {
+    return this.packsRepository.findOneBy({ id });
+  }
+
   async findAndSavePack(card: Card, cardSet: CardSet): Promise<Pack> {
     return this.packsRepository.findAndSavePack(card, cardSet);
   }

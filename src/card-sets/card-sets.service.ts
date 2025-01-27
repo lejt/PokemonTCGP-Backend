@@ -7,6 +7,10 @@ import { Set, SetResume } from '../initial-card-seed/external-data.interface';
 export class CardSetsService {
   constructor(private readonly cardSetsRepository: CardSetsRepository) {}
 
+  async findSetByExternalId(externalId: string): Promise<CardSet> {
+    return this.cardSetsRepository.findOneBy({ externalId });
+  }
+
   async findAndSaveSet(cardSet: SetResume): Promise<CardSet> {
     return this.cardSetsRepository.findAndSaveSet(cardSet);
   }

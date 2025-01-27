@@ -32,7 +32,7 @@ export class UsersRepository extends Repository<User> {
       where: { id: userId },
       relations: ['userCards', 'userCards.card'],
     });
-
+    // TODO: consider if you want to return all data from card object
     return user;
   }
 

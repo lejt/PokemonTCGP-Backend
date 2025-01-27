@@ -5,16 +5,18 @@ import {
   OnApplicationBootstrap,
 } from '@nestjs/common';
 import TCGdex from '@tcgdex/sdk';
-import { CardSetsRepository } from '../card-sets/card-sets.repository';
-import { CardsRepository } from '../cards/cards.repository';
 import { Series, Set, SetResume, Card } from './external-data.interface';
 import { ERROR_MESSAGES } from '../constants/error-codes-and-messages';
+import { CardSetsService } from 'src/card-sets/card-sets.service';
+import { CardsService } from 'src/cards/cards.service';
 
 @Injectable()
 export class InitialCardSeedService implements OnApplicationBootstrap {
   constructor(
-    private readonly cardRepository: CardsRepository,
-    private readonly cardSetRepository: CardSetsRepository,
+    private readonly cardsService: CardsService,
+    // private readonly cardRepository: CardsRepository,
+    private readonly cardSetsService: CardSetsService,
+    // private readonly cardSetRepository: CardSetsRepository,
   ) {}
   private readonly tcgdex = new TCGdex('en');
   private logger = new Logger('InitialCardSeedService');
@@ -52,8 +54,10 @@ export class InitialCardSeedService implements OnApplicationBootstrap {
       );
 
       // TODO: replace with service call instead of repository call
-      await this.cardRepository.saveSeedCards(cardsList);
-      await this.cardSetRepository.saveSeedSets(setsData);
+      await this.cardsService.saveSeedCards(cardsList);
+      // await this.cardRepository.saveSeedCards(cardsList);
+      await this.cardSetsService.updateSeededSet(setsData);
+      // await this.cardSetRepository.saveSeedSets(setsData);
     } catch (error) {
       this.logger.error(
         'Failed to fetch and seed cards, packs, and sets in service',

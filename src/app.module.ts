@@ -10,6 +10,7 @@ import { configurationValidationSchema } from './config/config.schema';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserCard } from './user-cards/entity/user-card.entity';
 import { User } from './users/entity/user.entity';
+import { InitialCardSeedModule } from './initial-card-seed/initial-card-seed.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { User } from './users/entity/user.entity';
     CardsModule,
     CardSetsModule,
     PacksModule,
+    InitialCardSeedModule,
   ],
 })
 export class AppModule {}

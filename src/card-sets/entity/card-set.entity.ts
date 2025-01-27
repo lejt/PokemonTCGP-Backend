@@ -23,7 +23,7 @@ export class CardSet {
   @Column({ default: '' })
   symbol?: string;
 
-  @Column({ unique: true })
+  @Column({ name: 'external_id', unique: true })
   externalId: string;
 
   @Column({ default: '2000-01-01' })
