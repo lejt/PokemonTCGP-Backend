@@ -16,6 +16,12 @@ export class PacksService {
     return this.packsRepository.findOneBy({ id });
   }
 
+  async findPackByCardSetId(cardSet: CardSet, packId: number): Promise<Pack> {
+    return this.packsRepository.findOne({
+      where: { cardSet: { id: cardSet.id }, id: packId },
+    });
+  }
+
   async findAndSavePack(card: Card, cardSet: CardSet): Promise<Pack> {
     return this.packsRepository.findAndSavePack(card, cardSet);
   }

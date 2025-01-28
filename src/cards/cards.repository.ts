@@ -13,6 +13,8 @@ import {
   Card as ExternalCard,
   SetResume,
 } from '../initial-card-seed/external-data.interface';
+import { CardSet } from '../card-sets/entity/card-set.entity';
+import { Pack } from '../packs/entity/pack.entity';
 
 @Injectable()
 export class CardsRepository extends Repository<Card> {
@@ -28,6 +30,20 @@ export class CardsRepository extends Repository<Card> {
   async getCardIds(): Promise<number[]> {
     const cards = await this.find({ select: ['id'] });
     return cards.map((card) => card.id);
+  }
+
+  async getCardsFromSetOrPack(cardSet: CardSet, pack: Pack): Promise<any> {
+    let cards: Card[];
+    if (pack) {
+      cards = await this.find({ where: { pack: { id: pack.id } } });
+    } else {
+      cards = await this.find({
+        where: { cardSet: { id: cardSet.id } },
+      });
+    }
+
+    // TODO: suggest returning a DTO object to limit all the data
+    return cards;
   }
 
   async saveSeedCards(cardsList: ExternalCard<SetResume>[]): Promise<void> {

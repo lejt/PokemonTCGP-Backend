@@ -45,6 +45,66 @@ export const RarityOrder: { [key in Rarity]: number } = {
   [Rarity.NONE]: 8, // Always last
 };
 
+export const RarityChances = {
+  firstThreeCards: {
+    [Rarity.ONE_DIAMOND]: 2 / 100,
+  },
+  fourthCard: {
+    [Rarity.TWO_DIAMOND]: {
+      categoryChance: 90 / 100,
+      cardChance: 2.571 / 100,
+    },
+    [Rarity.THREE_DIAMOND]: {
+      categoryChance: 5 / 100,
+      cardChance: 0.357 / 100,
+    },
+    [Rarity.FOUR_DIAMOND]: {
+      categoryChance: 1.666 / 100,
+      cardChance: 0.333 / 100,
+    },
+    [Rarity.ONE_STAR]: {
+      categoryChance: 2.572 / 100,
+      cardChance: 0.321 / 100,
+    },
+    [Rarity.TWO_STAR]: {
+      categoryChance: 0.5 / 100,
+      cardChance: 0.055 / 100,
+    },
+    [Rarity.THREE_STAR]: {
+      categoryChance: 0.222 / 100,
+      cardChance: 0.222 / 100,
+    },
+    [Rarity.CROWN]: { categoryChance: 0.04 / 100, cardChance: 0.013 / 100 },
+  },
+  fifthCard: {
+    [Rarity.TWO_DIAMOND]: {
+      categoryChance: 60 / 100,
+      cardChance: 1.714 / 100,
+    },
+    [Rarity.THREE_DIAMOND]: {
+      categoryChance: 20 / 100,
+      cardChance: 1.428 / 100,
+    },
+    [Rarity.FOUR_DIAMOND]: {
+      categoryChance: 6.664 / 100,
+      cardChance: 1.332 / 100,
+    },
+    [Rarity.ONE_STAR]: {
+      categoryChance: 10.288 / 100,
+      cardChance: 1.286 / 100,
+    },
+    [Rarity.TWO_STAR]: {
+      categoryChance: 2 / 100,
+      cardChance: 0.222 / 100,
+    },
+    [Rarity.THREE_STAR]: {
+      categoryChance: 0.888 / 100,
+      cardChance: 0.888 / 100,
+    },
+    [Rarity.CROWN]: { categoryChance: 0.16 / 100, cardChance: 0.053 / 100 },
+  },
+};
+
 export const EnergyOrder: { [key in Energy]: number } = {
   [Energy.GRASS]: 0,
   [Energy.FIRE]: 1,

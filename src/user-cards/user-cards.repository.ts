@@ -1,14 +1,15 @@
 import { DataSource, Repository } from 'typeorm';
 import { UserCard } from './entity/user-card.entity';
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { User } from '../users/entity/user.entity';
 import { Card } from '../cards/entity/card.entity';
-import { GetCardsFilterDto } from 'src/cards/dto/get-card-filter.dto';
+import { GetCardsFilterDto } from '../cards/dto/get-card-filter.dto';
 import {
   EnergyOrder,
   Rarity,
   RarityOrder,
-} from 'src/cards/interfaces/card.enum';
+} from '../cards/interfaces/card.enum';
+import { ERROR_MESSAGES } from '../constants/error-codes-and-messages';
 
 @Injectable()
 export class UserCardsRepository extends Repository<UserCard> {
@@ -23,6 +24,9 @@ export class UserCardsRepository extends Repository<UserCard> {
   ): Promise<UserCard[]> {
     const { sortBy } = cardFilters;
     const query = this.createQueryBuilder('userCard');
+    this.logger.log(
+      `Querying the user's cards by filters: ${JSON.stringify(cardFilters)}...`,
+    );
 
     query
       .leftJoinAndSelect('userCard.card', 'card')
@@ -52,8 +56,17 @@ export class UserCardsRepository extends Repository<UserCard> {
         query.addOrderBy('card.id', order);
       });
     }
-
-    return await query.getMany();
+    try {
+      this.logger.log("Returning results from quering user's cards");
+      const result = await query.getMany();
+      return result;
+    } catch (error) {
+      this.logger.error(
+        `User's cards not found with filters: ${JSON.stringify(cardFilters)}`,
+        error.stack,
+      );
+      throw new NotFoundException(ERROR_MESSAGES.USER_CARD_NOT_FOUND);
+    }
   }
 
   async addOrUpdateUserCard(user: User, card: Card): Promise<void> {
@@ -81,6 +94,7 @@ export class UserCardsRepository extends Repository<UserCard> {
     }
   }
 
+  // function to create case statement for typeOrm queries
   generateCaseStatement = (
     columnName: string,
     orderMapping: Record<string, number>,
@@ -88,7 +102,7 @@ export class UserCardsRepository extends Repository<UserCard> {
     lastValueKey: string,
   ): string => {
     const cases = Object.entries(orderMapping)
-      .filter(([key]) => key !== lastValueKey) // Exclude the last value for now
+      .filter(([key]) => key !== lastValueKey)
       .map(([key, value]) => `WHEN ${columnName} = '${key}' THEN ${value}`)
       .join(' ');
 
