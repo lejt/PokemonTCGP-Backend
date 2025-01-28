@@ -1,4 +1,9 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { CardsRepository } from './cards.repository';
 import { Card } from './entity/card.entity';
 import { In } from 'typeorm';
@@ -11,6 +16,8 @@ import {
 import { PacksService } from '../packs/packs.service';
 import { Pack } from '../packs/entity/pack.entity';
 import { Rarity, RarityChances } from './interfaces/card.enum';
+import { UsersService } from '../users/users.service';
+import { UserCardsService } from '../user-cards/user-cards.service';
 
 @Injectable()
 export class CardsService {
@@ -18,34 +25,13 @@ export class CardsService {
     private readonly cardsRepository: CardsRepository,
     private readonly cardSetsService: CardSetsService,
     private readonly packsService: PacksService,
+    private readonly usersService: UsersService,
+    private readonly userCardsService: UserCardsService,
   ) {}
   private logger = new Logger('CardsService');
 
   async getAllCardIds(): Promise<number[]> {
     return this.cardsRepository.getCardIds();
-  }
-
-  async generateCards(cardSetExternalId: string, packId: number): Promise<any> {
-    const isGeneticApex = cardSetExternalId === 'A1';
-    const cardSet =
-      await this.cardSetsService.findSetByExternalId(cardSetExternalId);
-    let pack: Pack;
-
-    // TODO: for future, might need an enum of all pack externalIds
-    if (isGeneticApex) {
-      pack = await this.packsService.findPackByCardSetId(cardSet, packId);
-    }
-
-    const cards = await this.cardsRepository.getCardsFromSetOrPack(
-      cardSet,
-      pack,
-    );
-
-    // randomizer algorithm
-    // const randomCards = await this.cardDrawPoolRandomizer(cards);
-    // const names = randomCards.map((card) => card.name);
-    // console.log(names);
-    return await this.cardDrawPoolRandomizer(cards);
   }
 
   async findCardById(cardId: number): Promise<Card | null> {
@@ -71,6 +57,57 @@ export class CardsService {
     });
 
     return result;
+  }
+
+  async generateCards(
+    cardSetExternalId: string,
+    packId: number,
+    userId: string,
+  ): Promise<any> {
+    const user = await this.usersService.findUserById(userId);
+    if (!user) {
+      this.logger.error(
+        `User with id: ${userId} not found in card adding process`,
+      );
+    }
+    const cardSet =
+      await this.cardSetsService.findSetByExternalId(cardSetExternalId);
+    if (!cardSet) {
+      this.logger.warn(
+        `CardSet with externalId: ${cardSetExternalId} not found in card adding process`,
+      );
+    }
+    let pack: Pack;
+
+    // TODO: for future, might need an enum of all pack externalIds
+    const isGeneticApex = cardSetExternalId === 'A1';
+    if (isGeneticApex) {
+      pack = await this.packsService.findPackByCardSetId(cardSet, packId);
+      if (!pack) {
+        this.logger.warn(
+          `Pack with id: ${packId} not found in card adding process`,
+        );
+      }
+    }
+
+    const cards = await this.cardsRepository.getCardsFromSetOrPack(
+      cardSet,
+      pack,
+    );
+
+    try {
+      // randomizer algorithm
+      const randomizedCards = await this.cardDrawPoolRandomizer(cards);
+
+      // save cards to user
+      this.userCardsService.addMultipleUserCards(user, randomizedCards);
+      return randomizedCards;
+    } catch (error) {
+      this.logger.error(`Failed to generate and save cards`, error.stack);
+      throw new InternalServerErrorException(
+        ERROR_MESSAGES.CARD_GENERATION_AND_SAVE_FAILED,
+      );
+    }
   }
 
   async saveSeedCards(cardsList: ExternalCard<SetResume>[]): Promise<void> {

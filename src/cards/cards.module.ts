@@ -7,6 +7,9 @@ import { Card } from './entity/card.entity';
 import { CoreAuthModules } from '../core-auth-modules/core-auth-modules.module';
 import { CardSetsModule } from '../card-sets/card-sets.module';
 import { PacksModule } from '../packs/packs.module';
+import { UserCardsModule } from '../user-cards/user-cards.module';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -14,9 +17,17 @@ import { PacksModule } from '../packs/packs.module';
     CoreAuthModules,
     CardSetsModule,
     PacksModule,
+    UserCardsModule,
   ],
   controllers: [CardsController],
-  providers: [CardsService, CardsRepository],
+  providers: [
+    CardsService,
+    CardsRepository,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
   exports: [CardsService],
 })
 export class CardsModule {}

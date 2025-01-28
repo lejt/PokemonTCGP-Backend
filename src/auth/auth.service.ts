@@ -22,7 +22,7 @@ export class AuthService {
     authCredentialsDto: AuthCredentialsDto,
   ): Promise<{ accessToken: string }> {
     const { username, password } = authCredentialsDto;
-    const user = await this.usersService.findByUsername(username);
+    const user = await this.usersService.findUserByUsername(username);
 
     if (user && (await bcryptjs.compare(password, user.password))) {
       const payload: JwtPayload = { username, sub: user.id };

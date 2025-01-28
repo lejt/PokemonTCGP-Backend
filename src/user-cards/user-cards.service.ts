@@ -13,7 +13,7 @@ export class UserCardsService {
     userId: string,
     cardFilters: GetCardsFilterDto,
   ): Promise<UserCard[]> {
-    return this.userCardsRepository.getCardFromUser(userId, cardFilters);
+    return this.userCardsRepository.getCardsFromUser(userId, cardFilters);
   }
 
   async addOrUpdateUserCard(user: User, card: Card): Promise<void> {

@@ -15,6 +15,8 @@ import {
 } from '../initial-card-seed/external-data.interface';
 import { CardSet } from '../card-sets/entity/card-set.entity';
 import { Pack } from '../packs/entity/pack.entity';
+import { plainToInstance } from 'class-transformer';
+import { SimpleCard } from './dto/simple-card.dto';
 
 @Injectable()
 export class CardsRepository extends Repository<Card> {
@@ -42,8 +44,9 @@ export class CardsRepository extends Repository<Card> {
       });
     }
 
-    // TODO: suggest returning a DTO object to limit all the data
-    return cards;
+    return plainToInstance(SimpleCard, cards, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async saveSeedCards(cardsList: ExternalCard<SetResume>[]): Promise<void> {

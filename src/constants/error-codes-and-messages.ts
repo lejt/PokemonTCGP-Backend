@@ -10,4 +10,8 @@ export const ERROR_MESSAGES = {
   LOG_IN_FAILURE: 'Your log-in credentials are incorrect',
   CARD_NOT_FOUND: 'Card is not found',
   USER_CARD_NOT_FOUND: "User's cards not found",
+  PACK_NOT_FOUND: 'Pack not found',
+  CARD_SET_NOT_FOUND: 'Card Set not found',
+  CARD_GENERATION_AND_SAVE_FAILED:
+    'An error occurred with opening a set. Please try again another time',
 };

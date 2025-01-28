@@ -23,7 +23,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   // on each request that requires a token, user will be checked
   async validate(payload: JwtPayload): Promise<UserDto> {
     const { username } = payload;
-    const user: User = await this.usersService.findByUsername(username);
+    const user: User = await this.usersService.findUserByUsername(username);
 
     if (!user) {
       throw new UnauthorizedException();

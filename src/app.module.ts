@@ -11,6 +11,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserCard } from './user-cards/entity/user-card.entity';
 import { User } from './users/entity/user.entity';
 import { InitialCardSeedModule } from './initial-card-seed/initial-card-seed.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -35,6 +36,12 @@ import { InitialCardSeedModule } from './initial-card-seed/initial-card-seed.mod
         // ^ turn off in production to avoid accidental schema change
       }),
     }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 5000, // time to live in milliseconds
+        limit: 1, // currently 1 req / 5 seconds
+      },
+    ]),
     CardsModule,
     CardSetsModule,
     PacksModule,

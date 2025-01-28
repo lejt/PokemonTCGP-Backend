@@ -12,7 +12,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: logLevel,
   });
-  app.useGlobalPipes(new ValidationPipe()); // whitelist omits unknown properties, transform converts incoming data to one stated in DTO
+  app.useGlobalPipes(new ValidationPipe({ transform: true })); // whitelist omits unknown properties, transform converts incoming data to one stated in DTO
   const configService = app.get(ConfigService);
   await app.listen(configService.get('BACKEND_PORT'));
   logger.log(

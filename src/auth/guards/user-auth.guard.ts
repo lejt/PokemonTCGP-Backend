@@ -15,7 +15,7 @@ export class UserAuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
-    const existingUser = await this.usersService.findByUsername(user?.username);
+    const existingUser = await this.usersService.findUserByUsername(user?.username);
     if (!existingUser) {
       throw new NotFoundException(ERROR_MESSAGES.USER_NOT_FOUND);
     }

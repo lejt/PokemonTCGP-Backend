@@ -5,7 +5,6 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
-  NotFoundException,
 } from '@nestjs/common';
 import { AuthCredentialsDto } from '../auth/dto/auth-credentials-dto';
 import * as bcryptjs from 'bcryptjs';
@@ -13,16 +12,10 @@ import {
   ERROR_CODES,
   ERROR_MESSAGES,
 } from '../constants/error-codes-and-messages';
-import { CardsService } from '../cards/cards.service';
-import { UserCardsService } from '../user-cards/user-cards.service';
 
 @Injectable()
 export class UsersRepository extends Repository<User> {
-  constructor(
-    private dataSource: DataSource,
-    private readonly cardsService: CardsService,
-    private readonly userCardsService: UserCardsService,
-  ) {
+  constructor(private dataSource: DataSource) {
     super(User, dataSource.createEntityManager());
   }
   private logger = new Logger('UsersRepository', { timestamp: true });
@@ -66,48 +59,5 @@ export class UsersRepository extends Repository<User> {
         );
       }
     }
-  }
-
-  async addCardToUser(userId: string, cardId: number): Promise<void> {
-    const user = await this.findUserById(userId);
-    if (!user) {
-      this.logger.warn(
-        `User with id: ${userId} not found in card adding process`,
-      );
-      throw new NotFoundException(ERROR_MESSAGES.USER_NOT_FOUND);
-    }
-
-    const card = await this.cardsService.findCardById(cardId);
-    if (!card) {
-      this.logger.warn(
-        `Card with id: ${cardId} not found in card adding process`,
-      );
-      throw new Error(ERROR_MESSAGES.CARD_NOT_FOUND);
-    }
-
-    this.userCardsService.addOrUpdateUserCard(user, card);
-  }
-
-  async addMultipleCardsToUser(
-    userId: string,
-    cardIds: number[],
-  ): Promise<void> {
-    const user = await this.findUserById(userId);
-    if (!user) {
-      this.logger.warn(
-        `User with id: ${userId} not found in card adding process`,
-      );
-      throw new NotFoundException(ERROR_MESSAGES.USER_NOT_FOUND);
-    }
-
-    const cards = await this.cardsService.findCardsByIds(cardIds);
-    if (!cards.length) {
-      this.logger.warn(
-        `Cards with ids: ${cardIds} not found in card adding process`,
-      );
-      throw new Error(ERROR_MESSAGES.CARD_NOT_FOUND);
-    }
-
-    this.userCardsService.addMultipleUserCards(user, cards);
   }
 }

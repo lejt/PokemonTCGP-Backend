@@ -6,7 +6,6 @@ import { UserCardsService } from './user-cards.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserCard])],
-  controllers: [],
   providers: [UserCardsRepository, UserCardsService],
   exports: [UserCardsService],
 })

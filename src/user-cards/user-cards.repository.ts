@@ -18,7 +18,7 @@ export class UserCardsRepository extends Repository<UserCard> {
   }
   private logger = new Logger('UserCardsRepository');
 
-  async getCardFromUser(
+  async getCardsFromUser(
     userId: string,
     cardFilters: GetCardsFilterDto,
   ): Promise<UserCard[]> {
