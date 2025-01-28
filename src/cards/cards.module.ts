@@ -8,8 +8,8 @@ import { CoreAuthModules } from '../core-auth-modules/core-auth-modules.module';
 import { CardSetsModule } from '../card-sets/card-sets.module';
 import { PacksModule } from '../packs/packs.module';
 import { UserCardsModule } from '../user-cards/user-cards.module';
-import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [

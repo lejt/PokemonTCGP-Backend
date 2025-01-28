@@ -17,7 +17,7 @@ export class CardsController {
   }
 
   // post req used here as generate functions are non-idempotent
-  @Post('generate')
+  @Post('generatePack')
   generateAndAddCardsToUser(
     @Body('cardSetAndPackId') cardSetAndPackId: GenerateCardsDto,
     @GetCurrentUser() user: UserDto,
