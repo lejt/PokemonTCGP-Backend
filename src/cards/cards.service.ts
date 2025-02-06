@@ -30,8 +30,8 @@ export class CardsService {
   ) {}
   private logger = new Logger('CardsService');
 
-  async getAllCardIds(): Promise<number[]> {
-    return this.cardsRepository.getCardIds();
+  async getAllCards(): Promise<Card[]> {
+    return this.cardsRepository.getAllCards();
   }
 
   async findCardById(cardId: number): Promise<Card | null> {

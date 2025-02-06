@@ -13,6 +13,7 @@ async function bootstrap() {
     logger: logLevel,
   });
   app.useGlobalPipes(new ValidationPipe({ transform: true })); // whitelist omits unknown properties, transform converts incoming data to one stated in DTO
+  app.enableCors();
   const configService = app.get(ConfigService);
   await app.listen(configService.get('BACKEND_PORT'));
   logger.log(

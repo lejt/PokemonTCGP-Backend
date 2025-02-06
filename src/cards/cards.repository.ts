@@ -29,9 +29,9 @@ export class CardsRepository extends Repository<Card> {
   }
   private logger = new Logger('CardsRepository', { timestamp: true });
 
-  async getCardIds(): Promise<number[]> {
-    const cards = await this.find({ select: ['id'] });
-    return cards.map((card) => card.id);
+  async getAllCards(): Promise<Card[]> {
+    // const cards = await this.find({ select: ['id'] });
+    return this.find();
   }
 
   async getCardsFromSetOrPack(cardSet: CardSet, pack: Pack): Promise<any> {

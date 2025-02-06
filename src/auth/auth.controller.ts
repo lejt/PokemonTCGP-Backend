@@ -13,8 +13,14 @@ export class AuthController {
 
   @Post('/signin')
   signIn(
-    @Body() authCredentialsDto: AuthCredentialsDto,
+    @Body() authCredentialsDto: { username: string; password: string },
   ): Promise<{ accessToken: string }> {
     return this.authService.signIn(authCredentialsDto);
+  }
+
+  @Post('validate-token')
+  async validateToken(@Body() tokenObject: { accessToken: string }) {
+    const isValid = await this.authService.validateToken(tokenObject);
+    return { valid: isValid };
   }
 }

@@ -25,12 +25,24 @@ export class AuthService {
     const user = await this.usersService.findUserByUsername(username);
 
     if (user && (await bcryptjs.compare(password, user.password))) {
+      this.logger.log(`Signing in user: ${username}`);
       const payload: JwtPayload = { username, sub: user.id };
       const accessToken: string = await this.jwtService.sign(payload);
       return { accessToken };
     } else {
       this.logger.warn(`Failed to log-in user: ${username}`);
       throw new UnauthorizedException(ERROR_MESSAGES.LOG_IN_FAILURE);
+    }
+  }
+
+  async validateToken(tokenObject: { accessToken: string }): Promise<boolean> {
+    try {
+      const { accessToken } = tokenObject;
+      const decoded = this.jwtService.verify(accessToken);
+      return !!decoded;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      return false;
     }
   }
 }
