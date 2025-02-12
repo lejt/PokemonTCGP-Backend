@@ -39,7 +39,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
     ThrottlerModule.forRoot([
       {
         ttl: 5000, // time to live in milliseconds
-        limit: 1, // currently 1 req / 5 seconds
+        limit: 10, // currently 10 req / 5 seconds
       },
     ]),
     CardsModule,

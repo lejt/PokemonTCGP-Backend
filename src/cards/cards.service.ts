@@ -30,8 +30,46 @@ export class CardsService {
   ) {}
   private logger = new Logger('CardsService');
 
-  async getAllCards(): Promise<Card[]> {
-    return this.cardsRepository.getAllCards();
+  async getAllCards(
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<{
+    // TODO: put into interface
+    data: Card[];
+    pagination: {
+      currentPage: number;
+      nextPage: number;
+      totalItems: number;
+      totalPages: number;
+      limit: number;
+    };
+  }> {
+    page = isNaN(page) || page < 1 ? 1 : page;
+    limit = isNaN(limit) || limit < 1 ? 10 : limit;
+
+    const skip = (page - 1) * limit;
+
+    const [cards, total] = await this.cardsRepository.findAndCount({
+      skip,
+      take: limit,
+      order: {
+        id: 'ASC',
+      },
+    });
+
+    const totalPages = Math.ceil(total / limit);
+    const nextPage = totalPages > page + 1 ? page + 1 : totalPages;
+
+    return {
+      data: cards,
+      pagination: {
+        currentPage: page,
+        nextPage: nextPage,
+        totalItems: total,
+        totalPages: totalPages,
+        limit: limit,
+      },
+    };
   }
 
   async findCardById(cardId: number): Promise<Card | null> {

@@ -70,6 +70,9 @@ export class UserCardsRepository extends Repository<UserCard> {
   }
 
   async addOrUpdateUserCard(user: User, card: Card): Promise<void> {
+    this.logger.log(
+      `Attempting to add card: ${card.name}, id: ${card.id} to user...`,
+    );
     const existingUserCard = await this.findOne({
       where: { user: { id: user.id }, card: { id: card.id } },
     });
