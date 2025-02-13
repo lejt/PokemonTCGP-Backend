@@ -15,9 +15,15 @@ import {
 } from '../initial-card-seed/external-data.interface';
 import { PacksService } from '../packs/packs.service';
 import { Pack } from '../packs/entity/pack.entity';
-import { Rarity, RarityChances } from './interfaces/card.enum';
+import {
+  diamondRarities,
+  Rarity,
+  RarityChances,
+  starRarities,
+} from './interfaces/card.enum';
 import { UsersService } from '../users/users.service';
 import { UserCardsService } from '../user-cards/user-cards.service';
+import { CardSetRarityCounts } from './interfaces/cardset-card-rarity-count.interface';
 
 @Injectable()
 export class CardsService {
@@ -49,27 +55,37 @@ export class CardsService {
 
     const skip = (page - 1) * limit;
 
-    const [cards, total] = await this.cardsRepository.findAndCount({
-      skip,
-      take: limit,
-      order: {
-        id: 'ASC',
-      },
-    });
+    try {
+      const [cards, total] = await this.cardsRepository.findAndCount({
+        skip,
+        take: limit,
+        order: {
+          id: 'ASC',
+        },
+      });
 
-    const totalPages = Math.ceil(total / limit);
-    const nextPage = totalPages > page + 1 ? page + 1 : totalPages;
+      const totalPages = Math.ceil(total / limit);
+      const nextPage = page < totalPages ? page + 1 : null;
 
-    return {
-      data: cards,
-      pagination: {
-        currentPage: page,
-        nextPage: nextPage,
-        totalItems: total,
-        totalPages: totalPages,
-        limit: limit,
-      },
-    };
+      return {
+        data: cards,
+        pagination: {
+          currentPage: page,
+          nextPage: nextPage,
+          totalItems: total,
+          totalPages: totalPages,
+          limit: limit,
+        },
+      };
+    } catch (error) {
+      this.logger.error(
+        `Error occurred when fetch cards with query: {page: ${page}, limit: ${limit}}`,
+        error.stack,
+      );
+      throw new InternalServerErrorException(
+        ERROR_MESSAGES.GENERIC_FETCHING_ERROR,
+      );
+    }
   }
 
   async findCardById(cardId: number): Promise<Card | null> {
@@ -150,6 +166,44 @@ export class CardsService {
 
   async saveSeedCards(cardsList: ExternalCard<SetResume>[]): Promise<void> {
     return this.cardsRepository.saveSeedCards(cardsList);
+  }
+
+  async getCardRarityCountPerCardSet(): Promise<CardSetRarityCounts> {
+    try {
+      this.logger.log('Fetching cards and counting by rarities...');
+
+      const cards = await this.cardsRepository.find();
+      const cardSets = await this.cardSetsService.getAllCardSets();
+      const cardSetRarityCounts: CardSetRarityCounts = {};
+
+      cardSets.forEach((cs) => {
+        cardSetRarityCounts[cs.name] = { diamondCount: 0, starCount: 0 };
+      });
+
+      cards.forEach((card) => {
+        const cardSetName = card.cardSet.name;
+        if (!cardSetRarityCounts[cardSetName]) {
+          cardSetRarityCounts[cardSetName] = { diamondCount: 0, starCount: 0 };
+        }
+
+        if (diamondRarities.includes(card.rarity)) {
+          cardSetRarityCounts[cardSetName].diamondCount++;
+        } else if (starRarities.includes(card.rarity)) {
+          cardSetRarityCounts[cardSetName].starCount++;
+        }
+      });
+
+      this.logger.log('Successfully counted rarities of cards per card set');
+      return cardSetRarityCounts;
+    } catch (error) {
+      this.logger.error(
+        'Error while counting card rarities per card set',
+        error.stack,
+      );
+      throw new InternalServerErrorException(
+        ERROR_MESSAGES.GENERIC_FETCHING_ERROR,
+      );
+    }
   }
 
   async cardDrawPoolRandomizer(cards: any): Promise<any> {

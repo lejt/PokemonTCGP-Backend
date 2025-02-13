@@ -45,6 +45,19 @@ export const RarityOrder: { [key in Rarity]: number } = {
   [Rarity.NONE]: 8, // Always last
 };
 
+export const diamondRarities = [
+  Rarity.ONE_DIAMOND,
+  Rarity.TWO_DIAMOND,
+  Rarity.THREE_DIAMOND,
+  Rarity.FOUR_DIAMOND,
+];
+
+export const starRarities = [
+  Rarity.ONE_STAR,
+  Rarity.TWO_STAR,
+  Rarity.THREE_STAR,
+];
+
 export const RarityChances = {
   firstThreeCards: {
     [Rarity.ONE_DIAMOND]: 2 / 100,

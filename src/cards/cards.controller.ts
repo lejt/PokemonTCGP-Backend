@@ -6,6 +6,7 @@ import { GenerateCardsDto } from './dto/generate-cards.dto';
 import { GetCurrentUser } from '../auth/decorator/get-user.decorator';
 import { UserDto } from '../users/dto/user.dto';
 import { Card } from './entity/card.entity';
+import { CardSetRarityCounts } from './interfaces/cardset-card-rarity-count.interface';
 
 @Controller('cards')
 @UseGuards(AuthGuard(), UserAuthGuard)
@@ -49,5 +50,10 @@ export class CardsController {
   ): Promise<any> {
     const { cardSetExternalId, packId } = cardSetAndPackId;
     return this.cardsService.generateCards(cardSetExternalId, packId, user.id);
+  }
+
+  @Get('rarity-count')
+  getCardRarityCountPerCardSet(): Promise<CardSetRarityCounts> {
+    return this.cardsService.getCardRarityCountPerCardSet();
   }
 }

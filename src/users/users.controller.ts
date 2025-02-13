@@ -16,7 +16,7 @@ export class UsersController {
     private readonly userCardsService: UserCardsService,
   ) {}
 
-  @Get('me/cards')
+  @Get('me/user-cards')
   async getUserCards(
     @GetCurrentUser() user: UserDto,
     @Query() cardFilters: GetCardsFilterDto,

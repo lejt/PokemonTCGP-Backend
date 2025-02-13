@@ -18,4 +18,8 @@ export class CardSetsService {
   async updateSeededSet(setsData: Set[]): Promise<void> {
     return this.cardSetsRepository.saveSeedSets(setsData);
   }
+
+  async getAllCardSets(): Promise<CardSet[]> {
+    return this.cardSetsRepository.find();
+  }
 }

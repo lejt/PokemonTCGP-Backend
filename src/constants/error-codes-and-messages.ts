@@ -13,5 +13,7 @@ export const ERROR_MESSAGES = {
   PACK_NOT_FOUND: 'Pack not found',
   CARD_SET_NOT_FOUND: 'Card Set not found',
   CARD_GENERATION_AND_SAVE_FAILED:
-    'An error occurred with opening a set. Please try again another time',
+    'An error occurred with opening a set. Please try again at a later time',
+  GENERIC_FETCHING_ERROR:
+    'An error occurred when fetching data. Please try again at a later time',
 };

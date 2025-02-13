@@ -30,6 +30,8 @@ export class UserCardsRepository extends Repository<UserCard> {
 
     query
       .leftJoinAndSelect('userCard.card', 'card')
+      .leftJoin('card.cardSet', 'cardSet')
+      .addSelect(['cardSet.id', 'cardSet.name'])
       .where('userCard.user_id = :userId', { userId });
 
     if (sortBy) {
