@@ -45,7 +45,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
     CardsModule,
     CardSetsModule,
     PacksModule,
-    InitialCardSeedModule,
+    // InitialCardSeedModule,
   ],
 })
 export class AppModule {}

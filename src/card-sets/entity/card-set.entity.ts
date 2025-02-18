@@ -32,7 +32,10 @@ export class CardSet {
   @OneToMany(() => Card, (card) => card.cardSet)
   cards: Card[];
 
-  @OneToMany(() => Pack, (pack) => pack.cardSet)
+  @OneToMany(() => Pack, (pack) => pack.cardSet, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
   packs: Pack[];
 
   @CreateDateColumn()

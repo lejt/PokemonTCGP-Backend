@@ -4,9 +4,12 @@ import { CardSet } from './entity/card-set.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoreAuthModules } from '../core-auth-modules/core-auth-modules.module';
 import { CardSetsService } from './card-sets.service';
+import { CardSetsController } from './card-sets.controller';
+import { PacksModule } from 'src/packs/packs.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CardSet]), CoreAuthModules],
+  imports: [TypeOrmModule.forFeature([CardSet]), CoreAuthModules, PacksModule],
+  controllers: [CardSetsController],
   providers: [CardSetsRepository, CardSetsService],
   exports: [CardSetsService],
 })

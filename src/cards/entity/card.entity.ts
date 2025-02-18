@@ -92,7 +92,7 @@ export class Card {
     eager: true,
     onDelete: 'CASCADE',
   })
-  @JoinColumn()
+  @JoinColumn({ name: 'card_set_id' })
   cardSet: CardSet;
 
   // TODO: keep nullable? or fill with default value?
@@ -101,6 +101,7 @@ export class Card {
     eager: true,
     onDelete: 'CASCADE',
   })
+  @JoinColumn({ name: 'pack_id' })
   pack?: Pack;
 
   @Column({ default: '' })

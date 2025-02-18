@@ -1,8 +1,8 @@
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional } from 'class-validator';
 
 export class GenerateCardsDto {
-  @IsString()
-  cardSetExternalId: string;
+  @IsNumber()
+  cardSetId: number;
 
   @IsOptional()
   @IsNumber()

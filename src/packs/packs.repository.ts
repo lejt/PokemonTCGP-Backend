@@ -3,7 +3,7 @@ import { Pack } from './entity/pack.entity';
 import { Injectable } from '@nestjs/common';
 import { CardSet } from '../card-sets/entity/card-set.entity';
 import { getGAPackName } from '../utils/pack-utils';
-import { Card } from '../initial-card-seed/external-data.interface';
+import { Card } from '../initial-card-seed/interface/external-data.interface';
 
 @Injectable()
 export class PacksRepository extends Repository<Pack> {

@@ -12,9 +12,8 @@ import { CardSetsService } from '../card-sets/card-sets.service';
 import {
   SetResume,
   Card as ExternalCard,
-} from '../initial-card-seed/external-data.interface';
+} from '../initial-card-seed/interface/external-data.interface';
 import { PacksService } from '../packs/packs.service';
-import { Pack } from '../packs/entity/pack.entity';
 import {
   diamondRarities,
   Rarity,
@@ -23,7 +22,12 @@ import {
 } from './interfaces/card.enum';
 import { UsersService } from '../users/users.service';
 import { UserCardsService } from '../user-cards/user-cards.service';
-import { CardSetRarityCounts } from './interfaces/cardset-card-rarity-count.interface';
+import { CardSetRarityCounts } from './interfaces/cards.interface';
+import { CardSetNames } from 'src/card-sets/enum/cardSet.enum';
+import { cardPreviewIds } from 'src/constants/card-preview-ids';
+import { plainToInstance } from 'class-transformer';
+import { SimpleCard } from './dto/simple-card.dto';
+import { RarityChancesType } from './interfaces/cards.interface';
 
 @Injectable()
 export class CardsService {
@@ -93,7 +97,7 @@ export class CardsService {
   }
 
   async findCardsByIds(cardIds: number[]): Promise<Card[] | null> {
-    if (!cardIds.length) return null;
+    if (!cardIds?.length) return null;
 
     // fetch unique card Ids, typeORM .find only performs unique searches
     const uniqueCardIds = Array.from(new Set(cardIds));
@@ -114,35 +118,35 @@ export class CardsService {
   }
 
   async generateCards(
-    cardSetExternalId: string,
+    cardSetId: number,
     packId: number,
     userId: string,
-  ): Promise<any> {
+  ): Promise<Card[]> {
     const user = await this.usersService.findUserById(userId);
     if (!user) {
       this.logger.error(
         `User with id: ${userId} not found in card adding process`,
       );
     }
-    const cardSet =
-      await this.cardSetsService.findSetByExternalId(cardSetExternalId);
+
+    const cardSet = await this.cardSetsService.findSetById(cardSetId);
     if (!cardSet) {
       this.logger.warn(
-        `CardSet with externalId: ${cardSetExternalId} not found in card adding process`,
+        `CardSet with externalId: ${cardSetId} not found in card adding process`,
       );
     }
-    let pack: Pack;
 
-    // TODO: for future, might need an enum of all pack externalIds
-    const isGeneticApex = cardSetExternalId === 'A1';
-    if (isGeneticApex) {
-      pack = await this.packsService.findPackByCardSetId(cardSet, packId);
+    let pack = null;
+    if (cardSet.packs && cardSet.packs.length > 0) {
+      pack = await this.packsService.findPackById(packId);
       if (!pack) {
         this.logger.warn(
           `Pack with id: ${packId} not found in card adding process`,
         );
       }
     }
+
+    this.logger.log(`Opening pack: ${pack ? pack.name : cardSet.name}...`);
 
     const cards = await this.cardsRepository.getCardsFromSetOrPack(
       cardSet,
@@ -161,6 +165,74 @@ export class CardsService {
       throw new InternalServerErrorException(
         ERROR_MESSAGES.CARD_GENERATION_AND_SAVE_FAILED,
       );
+    }
+  }
+
+  async getPreviewCards(
+    cardSetId: number,
+    packId: number,
+    userId: string,
+  ): Promise<SimpleCard[]> {
+    const user = await this.usersService.findUserById(userId);
+    if (!user) {
+      this.logger.error(
+        `User with id: ${userId} not found in fetching card previews process`,
+      );
+    }
+
+    const cardSet = await this.cardSetsService.findSetById(cardSetId);
+    let pack = null;
+    if (packId) {
+      pack = await this.packsService.findPackById(packId);
+    }
+
+    if (cardSet) {
+      if (packId && !pack) return;
+      let cardIds: number[];
+
+      // determine which predefined cards to fetch based on cardSet/pack
+      switch (cardSet.name) {
+        case CardSetNames.GENETIC_APEX:
+          if (pack.name.includes('Pikachu')) {
+            cardIds = cardPreviewIds[CardSetNames.GENETIC_APEX].Pikachu;
+          } else if (pack.name.includes('Charizard')) {
+            cardIds = cardPreviewIds[CardSetNames.GENETIC_APEX].Charizard;
+          } else if (pack.name.includes('Mewtwo')) {
+            cardIds = cardPreviewIds[CardSetNames.GENETIC_APEX].Mewtwo;
+          }
+          break;
+        case CardSetNames.MYTHICAL_ISLAND:
+          cardIds = cardPreviewIds[CardSetNames.MYTHICAL_ISLAND].default;
+          break;
+        case CardSetNames.SPACE_TIME_SMACKDOWN:
+          cardIds = cardPreviewIds[CardSetNames.SPACE_TIME_SMACKDOWN].Palkia;
+
+          // TODO: add this when this cardset is divided into packs
+          // if (pack.name.includes('Palkia')) {
+          //   cardIds = cardPreviewIds[CardSetNames.SPACE_TIME_SMACKDOWN].Palkia;
+          // } else if (pack.name.includes('Dialga')) {
+          //   cardIds = cardPreviewIds[CardSetNames.SPACE_TIME_SMACKDOWN].Dialga;
+          // }
+          break;
+      }
+
+      try {
+        this.logger.log(
+          `Fetching pack cards preview from set: ${cardSet.name}, packId: ${packId}...`,
+        );
+        const cards = await this.findCardsByIds(cardIds);
+        return plainToInstance(SimpleCard, cards, {
+          excludeExtraneousValues: true,
+        });
+      } catch (error) {
+        this.logger.error(
+          `Failed to fetch pack cards preview with card set id: ${cardSetId}, and pack id: ${packId}`,
+          error.stack,
+        );
+        throw new InternalServerErrorException(
+          ERROR_MESSAGES.GENERIC_FETCHING_ERROR,
+        );
+      }
     }
   }
 
@@ -206,7 +278,7 @@ export class CardsService {
     }
   }
 
-  async cardDrawPoolRandomizer(cards: any): Promise<any> {
+  async cardDrawPoolRandomizer(cards: Card[]): Promise<Card[]> {
     // Categorize cards by rarity
     const pools = {
       [Rarity.ONE_DIAMOND]: cards.filter(
@@ -256,14 +328,17 @@ export class CardsService {
   }
 
   // Helper function to draw a card from a pool based on card-specific probabilities
-  drawCardFromPool = (pool: any[], cardChance: number): any => {
+  drawCardFromPool = (pool: Card[], cardChance: number): Card => {
     const random = Math.random();
     const index = Math.floor(random / cardChance);
     return pool[index % pool.length]; // Fallback to valid index
   };
 
   // Helper function to handle category-based draw logic
-  drawCardWithCategory = (pools: Record<string, any[]>, chances: any): any => {
+  drawCardWithCategory = (
+    pools: Partial<Record<Rarity, Card[]>>,
+    chances: RarityChancesType,
+  ): Card => {
     const random = Math.random();
     let cumulativeChance = 0;
 
@@ -277,6 +352,6 @@ export class CardsService {
       }
     }
 
-    return null; // In case no card is selected (unlikely with proper probabilities)
+    return null;
   };
 }

@@ -1,14 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { CardSetsRepository } from './card-sets.repository';
 import { CardSet } from './entity/card-set.entity';
-import { Set, SetResume } from '../initial-card-seed/external-data.interface';
+import {
+  Set,
+  SetResume,
+} from '../initial-card-seed/interface/external-data.interface';
+import { CardSetAndPack } from './interfaces/card-sets.interface';
 
 @Injectable()
 export class CardSetsService {
   constructor(private readonly cardSetsRepository: CardSetsRepository) {}
 
-  async findSetByExternalId(externalId: string): Promise<CardSet> {
-    return this.cardSetsRepository.findOneBy({ externalId });
+  async findSetById(id: number): Promise<CardSet> {
+    return this.cardSetsRepository.findOneBy({ id });
   }
 
   async findAndSaveSet(cardSet: SetResume): Promise<CardSet> {
@@ -21,5 +25,24 @@ export class CardSetsService {
 
   async getAllCardSets(): Promise<CardSet[]> {
     return this.cardSetsRepository.find();
+  }
+
+  async getCardSetAndPackData(): Promise<CardSetAndPack[]> {
+    const cardSets = await this.getAllCardSets();
+    const cardSetAndPacks = [];
+    cardSets.forEach((cs) => {
+      cardSetAndPacks.push({
+        id: cs.id,
+        name: cs.name,
+        logo: cs.logo,
+        image: cs.logo, // TODO: replace with cardset image
+        packs:
+          cs.packs?.map((pack) => {
+            return { id: pack.id, image: pack.name }; // TODO: replace pack.name with pack image
+          }) || [],
+      });
+    });
+
+    return cardSetAndPacks;
   }
 }

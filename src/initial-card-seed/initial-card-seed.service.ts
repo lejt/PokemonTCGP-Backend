@@ -5,7 +5,12 @@ import {
   OnApplicationBootstrap,
 } from '@nestjs/common';
 import TCGdex from '@tcgdex/sdk';
-import { Series, Set, SetResume, Card } from './external-data.interface';
+import {
+  Series,
+  Set,
+  SetResume,
+  Card,
+} from './interface/external-data.interface';
 import { ERROR_MESSAGES } from '../constants/error-codes-and-messages';
 import { CardSetsService } from '../card-sets/card-sets.service';
 import { CardsService } from '../cards/cards.service';

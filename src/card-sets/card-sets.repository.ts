@@ -6,7 +6,10 @@ import {
 import { DataSource, Repository } from 'typeorm';
 import { CardSet } from './entity/card-set.entity';
 import { ERROR_MESSAGES } from '../constants/error-codes-and-messages';
-import { Set, SetResume } from '../initial-card-seed/external-data.interface';
+import {
+  Set,
+  SetResume,
+} from '../initial-card-seed/interface/external-data.interface';
 
 @Injectable()
 export class CardSetsRepository extends Repository<CardSet> {

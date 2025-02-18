@@ -12,7 +12,7 @@ import { PacksService } from '../packs/packs.service';
 import {
   Card as ExternalCard,
   SetResume,
-} from '../initial-card-seed/external-data.interface';
+} from '../initial-card-seed/interface/external-data.interface';
 import { CardSet } from '../card-sets/entity/card-set.entity';
 import { Pack } from '../packs/entity/pack.entity';
 import { plainToInstance } from 'class-transformer';
