@@ -15,10 +15,10 @@ export enum SortOrder {
 }
 
 export class SortByDto {
-  @IsEnum(['rarity', 'types', 'updatedAt', 'quantity'], {
+  @IsEnum(['id', 'rarity', 'types', 'updatedAt', 'quantity'], {
     message: 'Invalid sortBy field',
   })
-  field: 'rarity' | 'types' | 'updatedAt' | 'quantity';
+  field: 'id' | 'rarity' | 'types' | 'updatedAt' | 'quantity';
 
   @IsEnum(SortOrder)
   order: SortOrder;

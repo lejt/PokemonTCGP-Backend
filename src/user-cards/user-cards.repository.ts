@@ -52,7 +52,7 @@ export class UserCardsRepository extends Repository<UserCard> {
             null,
           );
           query.addOrderBy(typeCase, order);
-        } else {
+        } else if (field === 'quantity' || field === 'updatedAt') {
           query.addOrderBy(`userCard.${field}`, order);
         }
         query.addOrderBy('card.id', order);

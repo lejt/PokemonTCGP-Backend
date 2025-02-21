@@ -31,6 +31,8 @@ export class CardSetsService {
     const cardSets = await this.getAllCardSets();
     const cardSetAndPacks = [];
     cardSets.forEach((cs) => {
+      if (cs.name === 'Promos-A') return; // omit this pack since it is promos
+
       cardSetAndPacks.push({
         id: cs.id,
         name: cs.name,

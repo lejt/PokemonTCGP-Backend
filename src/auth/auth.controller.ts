@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthCredentialsDto } from './dto/auth-credentials-dto';
 
@@ -19,7 +19,9 @@ export class AuthController {
   }
 
   @Post('validate-token')
-  async validateToken(@Body() tokenObject: { accessToken: string }) {
+  async validateToken(
+    @Body() tokenObject: { accessToken: string },
+  ): Promise<{ valid: boolean }> {
     const isValid = await this.authService.validateToken(tokenObject);
     return { valid: isValid };
   }

@@ -46,15 +46,6 @@ export class Card {
   @Column({ default: '' })
   suffix?: CardNameSuffix;
 
-  @Column('json')
-  variants: {
-    firstEdition: boolean;
-    holo: boolean;
-    normal: boolean;
-    reverse: boolean;
-    wPromo: boolean;
-  };
-
   @Column('json', { default: [] })
   attacks?: {
     name: string;
@@ -79,7 +70,7 @@ export class Card {
   illustrator: string;
 
   @Column({ default: '' })
-  description?: string;
+  description: string;
 
   @Column({ unique: true })
   externalId?: string;
