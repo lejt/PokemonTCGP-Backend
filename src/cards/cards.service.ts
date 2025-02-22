@@ -24,7 +24,7 @@ import { UsersService } from '../users/users.service';
 import { UserCardsService } from '../user-cards/user-cards.service';
 import { CardSetRarityCounts } from './interfaces/cards.interface';
 import { CardSetNames } from 'src/card-sets/enum/cardSet.enum';
-import { cardPreviewIds } from 'src/constants/card-preview-ids';
+import { cardPreviewExternalIds } from 'src/constants/card-preview-ids';
 import { plainToInstance } from 'class-transformer';
 import { SimpleCard } from './dto/simple-card.dto';
 import { RarityChancesType } from './interfaces/cards.interface';
@@ -117,6 +117,16 @@ export class CardsService {
     return result;
   }
 
+  async findCardsByExternalIds(cardExternalIds: string[]): Promise<Card[]> {
+    if (!cardExternalIds?.length) return [];
+
+    const cards = await this.cardsRepository.findBy({
+      externalId: In(cardExternalIds),
+    });
+
+    return cards;
+  }
+
   async generateCards(
     cardSetId: number,
     packId: number,
@@ -188,24 +198,29 @@ export class CardsService {
 
     if (cardSet) {
       if (packId && !pack) return;
-      let cardIds: number[];
+      let cardExternalIds: string[];
 
       // determine which predefined cards to fetch based on cardSet/pack
       switch (cardSet.name) {
         case CardSetNames.GENETIC_APEX:
           if (pack.name.includes('Pikachu')) {
-            cardIds = cardPreviewIds[CardSetNames.GENETIC_APEX].Pikachu;
+            cardExternalIds =
+              cardPreviewExternalIds[CardSetNames.GENETIC_APEX].Pikachu;
           } else if (pack.name.includes('Charizard')) {
-            cardIds = cardPreviewIds[CardSetNames.GENETIC_APEX].Charizard;
+            cardExternalIds =
+              cardPreviewExternalIds[CardSetNames.GENETIC_APEX].Charizard;
           } else if (pack.name.includes('Mewtwo')) {
-            cardIds = cardPreviewIds[CardSetNames.GENETIC_APEX].Mewtwo;
+            cardExternalIds =
+              cardPreviewExternalIds[CardSetNames.GENETIC_APEX].Mewtwo;
           }
           break;
         case CardSetNames.MYTHICAL_ISLAND:
-          cardIds = cardPreviewIds[CardSetNames.MYTHICAL_ISLAND].default;
+          cardExternalIds =
+            cardPreviewExternalIds[CardSetNames.MYTHICAL_ISLAND].default;
           break;
         case CardSetNames.SPACE_TIME_SMACKDOWN:
-          cardIds = cardPreviewIds[CardSetNames.SPACE_TIME_SMACKDOWN].Palkia;
+          cardExternalIds =
+            cardPreviewExternalIds[CardSetNames.SPACE_TIME_SMACKDOWN].Palkia;
 
           // TODO: add this when this cardset is divided into packs
           // if (pack.name.includes('Palkia')) {
@@ -220,7 +235,8 @@ export class CardsService {
         this.logger.log(
           `Fetching pack cards preview from set: ${cardSet.name}, packId: ${packId}...`,
         );
-        const cards = await this.findCardsByIds(cardIds);
+
+        const cards = await this.findCardsByExternalIds(cardExternalIds);
         return plainToInstance(SimpleCard, cards, {
           excludeExtraneousValues: true,
         });

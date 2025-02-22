@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { CardSet } from '../../card-sets/entity/card-set.entity';
 import {
+  Ability,
   CardNameSuffix,
   Category,
   Energy,
@@ -72,7 +73,7 @@ export class Card {
   @Column({ default: '' })
   description: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, name: 'external_id' })
   externalId?: string;
 
   @Column({ default: '' })
@@ -97,6 +98,9 @@ export class Card {
 
   @Column({ default: '' })
   effect?: string;
+
+  @Column('json', { default: [] })
+  abilities?: Ability[];
 
   @Column({ default: '' })
   trainerType?: TrainerType;

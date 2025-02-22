@@ -1,15 +1,17 @@
 import { CardSetNames } from 'src/card-sets/enum/cardSet.enum';
 
 // TODO: might be better to add based on names since ids can change if re-seeded
-export const cardPreviewIds = {
+export const cardPreviewExternalIds = {
   [CardSetNames.GENETIC_APEX]: {
-    Pikachu: [96, 41, 56, 104, 195, 78],
-    Charizard: [36, 47, 76, 23, 146, 79],
-    Mewtwo: [129, 4, 84, 153, 123, 132],
+    Pikachu: ['A1-281', 'A1-276', 'A1-233', 'A1-041', 'A1-056', 'A1-250'],
+    Charizard: ['A1-036', 'A1-230', 'A1-234', 'A1-020', 'A1-236', 'A1-272'],
+    Mewtwo: ['A1-282', 'A1-004', 'A1-277', 'A1-084', 'A1-244', 'A1-210'],
   },
-  [CardSetNames.MYTHICAL_ISLAND]: { default: [322, 351, 365, 337, 378, 325] },
+  [CardSetNames.MYTHICAL_ISLAND]: {
+    default: ['A1a-085', 'A1a-072', 'A1a-073', 'A1a-070', 'A1a-026', 'A1a-014'],
+  },
   [CardSetNames.SPACE_TIME_SMACKDOWN]: {
-    Palkia: [587, 592, 602, 589, 603, 597],
-    Dialga: [593, 585, 605, 596, 483],
+    Palkia: ['A2-204', 'A2-167', 'A2-190', 'A2-162', 'A2-125', 'A2-037'],
+    Dialga: ['A2-205', 'A2-160', 'A2-179', 'A2-007', 'A2-095'],
   },
 };

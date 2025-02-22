@@ -85,6 +85,7 @@ export class CardsRepository extends Repository<Card> {
             evolveFrom: card?.evolveFrom,
             effect: card?.effect,
             trainerType: card?.trainerType,
+            abilities: card?.abilities,
             cardSet,
             pack,
           } as Card);

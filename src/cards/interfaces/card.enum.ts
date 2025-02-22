@@ -15,10 +15,17 @@ export enum CardSet {
   GENETIC_APEX = 'A1',
   MYTHICAL_ISLAND = 'A1a',
   PROMOS_A = 'P-A',
+  SPACE_TIME_SMACKDOWN = 'A2',
 }
 
 export enum CardNameSuffix {
   EX = 'EX',
+}
+
+export interface Ability {
+  type: string;
+  name: string;
+  effect: string;
 }
 
 export enum Rarity {
