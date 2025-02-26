@@ -23,8 +23,13 @@ export class InitialCardSeedService implements OnApplicationBootstrap {
     private readonly cardSetsService: CardSetsService,
     // private readonly cardSetRepository: CardSetsRepository,
   ) {}
-  private readonly tcgdex = new TCGdex('en');
+
+  private readonly tcgdexInstance = new TCGdex('en');
   private logger = new Logger('InitialCardSeedService');
+
+  get tcgdex() {
+    return this.tcgdexInstance;
+  }
 
   // runs this service after all modules are initialized but before rest of application loads
   async onApplicationBootstrap() {

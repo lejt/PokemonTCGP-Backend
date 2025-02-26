@@ -1,8 +1,8 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { UserAuthGuard } from 'src/auth/guards/user-auth.guard';
+import { UserAuthGuard } from '@/auth/guards/user-auth.guard';
 import { CardSetsService } from './card-sets.service';
-import { PacksService } from 'src/packs/packs.service';
+import { PacksService } from '@/packs/packs.service';
 import { CardSetAndPack } from './interfaces/card-sets.interface';
 
 @Controller('card-sets')
