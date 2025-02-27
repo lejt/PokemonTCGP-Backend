@@ -15,7 +15,9 @@ export class UsersService {
     return this.usersRepository.findUserById(id);
   }
 
-  async createUser(authCredentialsDto: AuthCredentialsDto): Promise<void> {
+  async createUser(
+    authCredentialsDto: AuthCredentialsDto,
+  ): Promise<{ username: string }> {
     return this.usersRepository.createUser(authCredentialsDto);
   }
 }

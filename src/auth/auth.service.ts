@@ -14,7 +14,9 @@ export class AuthService {
   ) {}
   private logger = new Logger('AuthService');
 
-  async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
+  async signUp(
+    authCredentialsDto: AuthCredentialsDto,
+  ): Promise<{ username: string }> {
     return this.usersService.createUser(authCredentialsDto);
   }
 

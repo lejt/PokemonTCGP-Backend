@@ -29,21 +29,26 @@ export class UsersRepository extends Repository<User> {
     return user;
   }
 
-  async createUser(authCredentialsDto: AuthCredentialsDto): Promise<void> {
+  async createUser(
+    authCredentialsDto: AuthCredentialsDto,
+  ): Promise<{ username: string }> {
     const { username, password } = authCredentialsDto;
-
-    this.logger.log(`Creating a new user with username: ${username}`);
-
-    const salt = await bcryptjs.genSalt();
-    const hashedPassword = await bcryptjs.hash(password, salt);
-    const user = this.create({ username, password: hashedPassword });
-
     try {
+      this.logger.log(`Creating a new user with username: ${username}`);
+
+      const salt = await bcryptjs.genSalt();
+      const hashedPassword = await bcryptjs.hash(password, salt);
+      const user = this.create({
+        username: username.toLowerCase(), // store all usernames as lowercase db is case sensitive
+        password: hashedPassword,
+      });
+
       await this.save(user);
       this.logger.log(`User with username: ${username} created successfully`);
+      return { username: user.username };
     } catch (error) {
       if (error.code === ERROR_CODES.UNIQUE_VIOLATION) {
-        this.logger.warn(
+        this.logger.error(
           `Attempt to create duplicate username: ${username}`,
           error.stack,
         );
