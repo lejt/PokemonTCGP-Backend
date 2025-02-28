@@ -3,9 +3,6 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { devLogLevels, prodLogLevels } from './config/log-limits';
-import { Express } from 'express';
-
-let server: Express;
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -15,12 +12,12 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: logLevel,
   });
-  app.useGlobalPipes(new ValidationPipe({ transform: true })); // whitelist omits unknown properties, transform converts incoming data to one stated in DTO
 
-  // Enable CORS with a specific origin for production
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+
   const frontendUrl =
     process.env.NODE_ENV === 'production'
-      ? process.env.FRONTEND_URL // TODO: make sure this frontend url is the same in vercel.json
+      ? process.env.FRONTEND_URL
       : 'http://localhost:3000';
 
   app.enableCors({
@@ -44,31 +41,15 @@ async function bootstrap() {
     next();
   });
 
-  // Get the Express instance that NestJS uses internally
-  server = app.getHttpAdapter().getInstance();
-
-  // Initialize the application but don't start listening in production (for serverless)
-  if (process.env.NODE_ENV === 'production') {
-    await app.init();
-  } else {
-    const configService = app.get(ConfigService);
-    const port = process.env.PORT || configService.get('PORT');
-    await app.listen(port);
-    logger.log(`Application listening on port ${port}`);
-  }
-
-  return server;
+  const configService = app.get(ConfigService);
+  const port = process.env.PORT || configService.get('PORT') || 3000;
+  await app.listen(port);
+  logger.log(`Application listening on port ${port}`);
 }
 
-// For local development
-if (process.env.NODE_ENV !== 'production') {
-  bootstrap();
-}
+bootstrap();
 
-// Export the serverless handler
-export default async function handler(req, res) {
-  if (!server) {
-    server = await bootstrap();
-  }
-  return server(req, res);
+// Export the Express instance
+export default function handler(req, res) {
+  res.status(404).send('Not found - Function approach not used');
 }
