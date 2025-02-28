@@ -15,22 +15,36 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ transform: true })); // whitelist omits unknown properties, transform converts incoming data to one stated in DTO
 
   // Enable CORS with a specific origin for production
-  const frontendUrl =
-    process.env.NODE_ENV === 'production'
-      ? process.env.FRONTEND_URL
-      : 'http://localhost:3000';
+  // const frontendUrl =
+  //   process.env.NODE_ENV === 'production'
+  //     ? process.env.FRONTEND_URL
+  //     : 'http://localhost:3000';
 
+  // app.enableCors({
+  //   origin: frontendUrl,
+  //   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  //   credentials: true,
+  //   allowedHeaders: [
+  //     'X-CSRF-Token',
+  //     'X-Requested-With',
+  //     'Accept',
+  //     'Content-Type',
+  //     'Authorization',
+  //   ],
+  // });
+
+  // TEST
   app.enableCors({
-    origin: frontendUrl,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    origin: true,
     credentials: true,
-    allowedHeaders: [
-      'X-CSRF-Token',
-      'X-Requested-With',
-      'Accept',
-      'Content-Type',
-      'Authorization',
-    ],
+  });
+
+  app.use((req, res, next) => {
+    if (req.method === 'OPTIONS') {
+      res.status(200).end();
+      return;
+    }
+    next();
   });
 
   const configService = app.get(ConfigService);
