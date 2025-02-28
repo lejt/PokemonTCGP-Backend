@@ -13,11 +13,22 @@ async function bootstrap() {
     logger: logLevel,
   });
   app.useGlobalPipes(new ValidationPipe({ transform: true })); // whitelist omits unknown properties, transform converts incoming data to one stated in DTO
-  app.enableCors();
+
+  // Enable CORS with a specific origin for production
+  const frontendUrl =
+    process.env.NODE_ENV === 'prod'
+      ? process.env.FRONTEND_URL
+      : 'http://localhost:3000';
+
+  app.enableCors({
+    origin: frontendUrl,
+    methods: 'GET,POST,PUT,DELETE',
+    credentials: true,
+  });
+
   const configService = app.get(ConfigService);
-  await app.listen(configService.get('BACKEND_PORT'));
-  logger.log(
-    `Application listening on port ${configService.get('BACKEND_PORT')}`,
-  );
+  const port = process.env.PORT || configService.get('PORT');
+  await app.listen(port);
+  logger.log(`Application listening on port ${port}`);
 }
 bootstrap();
