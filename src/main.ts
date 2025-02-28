@@ -22,10 +22,15 @@ async function bootstrap() {
 
   app.enableCors({
     origin: frontendUrl,
-    methods: 'GET,POST,PUT,DELETE,OPTIONS',
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     credentials: true,
-    allowedHeaders:
-      'X-CSRF-Token, X-Requested-With, Accept, Content-Type, Authorization',
+    allowedHeaders: [
+      'X-CSRF-Token',
+      'X-Requested-With',
+      'Accept',
+      'Content-Type',
+      'Authorization',
+    ],
   });
 
   const configService = app.get(ConfigService);
