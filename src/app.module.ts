@@ -11,7 +11,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserCard } from './user-cards/entity/user-card.entity';
 import { User } from './users/entity/user.entity';
 import { ThrottlerModule } from '@nestjs/throttler';
-// import { InitialCardSeedModule } from './initial-card-seed/initial-card-seed.module';
+import { InitialCardSeedModule } from './initial-card-seed/initial-card-seed.module';
 
 @Module({
   imports: [
@@ -48,7 +48,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
     CardsModule,
     CardSetsModule,
     PacksModule,
-    // InitialCardSeedModule,
+    InitialCardSeedModule,
   ],
 })
 export class AppModule {}
