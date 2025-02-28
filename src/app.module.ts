@@ -31,7 +31,7 @@ import { InitialCardSeedModule } from './initial-card-seed/initial-card-seed.mod
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
         ssl:
-          process.env.NODE_ENV === 'prod'
+          process.env.NODE_ENV === 'production'
             ? { rejectUnauthorized: false }
             : false,
         entities: [Card, CardSet, Pack, UserCard, User],

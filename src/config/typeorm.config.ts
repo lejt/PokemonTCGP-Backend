@@ -16,7 +16,7 @@ const configDir = path.resolve(rootDir, 'config');
 const nodeEnv = process.env.NODE_ENV || 'dev';
 
 // Choose the appropriate environment file based on NODE_ENV
-const envFile = nodeEnv === 'prod' ? '.env.prod' : '.env.dev';
+const envFile = nodeEnv === 'production' ? '.env.prod' : '.env.dev';
 const envPath = path.resolve(configDir, envFile);
 
 // Load environment variables from the determined path

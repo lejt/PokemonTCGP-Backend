@@ -7,7 +7,7 @@ import { devLogLevels, prodLogLevels } from './config/log-limits';
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const logLevel =
-    process.env.NODE_ENV === 'prod' ? prodLogLevels : devLogLevels;
+    process.env.NODE_ENV === 'production' ? prodLogLevels : devLogLevels;
 
   const app = await NestFactory.create(AppModule, {
     logger: logLevel,
@@ -16,7 +16,7 @@ async function bootstrap() {
 
   // Enable CORS with a specific origin for production
   const frontendUrl =
-    process.env.NODE_ENV === 'prod'
+    process.env.NODE_ENV === 'production'
       ? process.env.FRONTEND_URL
       : 'http://localhost:3000';
 
