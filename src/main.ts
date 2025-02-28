@@ -24,6 +24,8 @@ async function bootstrap() {
     origin: frontendUrl,
     methods: 'GET,POST,PUT,DELETE',
     credentials: true,
+    allowedHeaders:
+      'X-CSRF-Token, X-Requested-With, Accept, Content-Type, Authorization',
   });
 
   const configService = app.get(ConfigService);
