@@ -12,6 +12,7 @@ import { UserCard } from './user-cards/entity/user-card.entity';
 import { User } from './users/entity/user.entity';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { InitialCardSeedModule } from './initial-card-seed/initial-card-seed.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -50,5 +51,6 @@ import { InitialCardSeedModule } from './initial-card-seed/initial-card-seed.mod
     PacksModule,
     InitialCardSeedModule,
   ],
+  controllers: [AppController],
 })
 export class AppModule {}
