@@ -3,6 +3,9 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { devLogLevels, prodLogLevels } from './config/log-limits';
+import { Express } from 'express';
+
+let server: Express;
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -41,9 +44,31 @@ async function bootstrap() {
     next();
   });
 
-  const configService = app.get(ConfigService);
-  const port = process.env.PORT || configService.get('PORT');
-  await app.listen(port);
-  logger.log(`Application listening on port ${port}`);
+  // Get the Express instance that NestJS uses internally
+  server = app.getHttpAdapter().getInstance();
+
+  // Initialize the application but don't start listening in production (for serverless)
+  if (process.env.NODE_ENV === 'production') {
+    await app.init();
+  } else {
+    const configService = app.get(ConfigService);
+    const port = process.env.PORT || configService.get('PORT');
+    await app.listen(port);
+    logger.log(`Application listening on port ${port}`);
+  }
+
+  return server;
 }
-bootstrap();
+
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  bootstrap();
+}
+
+// Export the serverless handler
+export default async function handler(req, res) {
+  if (!server) {
+    server = await bootstrap();
+  }
+  return server(req, res);
+}
