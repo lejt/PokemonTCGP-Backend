@@ -17,7 +17,7 @@ async function bootstrap() {
   // Enable CORS with a specific origin for production
   const frontendUrl =
     process.env.NODE_ENV === 'production'
-      ? process.env.FRONTEND_URL
+      ? process.env.FRONTEND_URL // TODO: make sure this frontend url is the same in vercel.json
       : 'http://localhost:3000';
 
   app.enableCors({
