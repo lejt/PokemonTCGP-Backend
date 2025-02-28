@@ -1,4 +1,4 @@
-import { CardSetNames } from '@/card-sets/enum/card-set.enum';
+import { CardSetNames } from '../card-sets/enum/card-set.enum';
 
 // TODO: might be better to add based on names since ids can change if re-seeded
 export const cardPreviewExternalIds = {

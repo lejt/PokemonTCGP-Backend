@@ -24,7 +24,7 @@ import { UsersService } from '../users/users.service';
 import { UserCardsService } from '../user-cards/user-cards.service';
 import { CardSetRarityCounts } from './interfaces/cards.interface';
 import { CardSetNames } from '../card-sets/enum/card-set.enum';
-import { cardPreviewExternalIds } from '@/constants/card-preview-ids';
+import { cardPreviewExternalIds } from '../constants/card-preview-ids';
 import { plainToInstance } from 'class-transformer';
 import { SimpleCard } from './dto/simple-card.dto';
 import { RarityChancesType } from './interfaces/cards.interface';

@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoreAuthModules } from '../core-auth-modules/core-auth-modules.module';
 import { CardSetsService } from './card-sets.service';
 import { CardSetsController } from './card-sets.controller';
-import { PacksModule } from '@/packs/packs.module';
+import { PacksModule } from '../packs/packs.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([CardSet]), CoreAuthModules, PacksModule],
