@@ -19,9 +19,7 @@ import { CardsService } from '../cards/cards.service';
 export class InitialCardSeedService implements OnApplicationBootstrap {
   constructor(
     private readonly cardsService: CardsService,
-    // private readonly cardRepository: CardsRepository,
     private readonly cardSetsService: CardSetsService,
-    // private readonly cardSetRepository: CardSetsRepository,
   ) {}
 
   private readonly tcgdexInstance = new TCGdex('en');
@@ -63,11 +61,8 @@ export class InitialCardSeedService implements OnApplicationBootstrap {
         ),
       );
 
-      // TODO: replace with service call instead of repository call
       await this.cardsService.saveSeedCards(cardsList);
-      // await this.cardRepository.saveSeedCards(cardsList);
       await this.cardSetsService.updateSeededSet(setsData);
-      // await this.cardSetRepository.saveSeedSets(setsData);
     } catch (error) {
       this.logger.error(
         'Failed to fetch and seed cards, packs, and sets in service',

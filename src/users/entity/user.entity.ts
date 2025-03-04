@@ -14,7 +14,6 @@ export class User {
 
   // relationship to cards
   @OneToMany(() => UserCard, (userCard) => userCard.user, {
-    cascade: true,
     eager: true, // loads userCards by default with the user
   })
   userCards: UserCard[];

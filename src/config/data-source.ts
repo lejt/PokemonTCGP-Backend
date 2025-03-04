@@ -13,10 +13,11 @@ const rootDir = isCompiled
 // Resolve the path to the `config/` folder in the root directory
 const configDir = path.resolve(rootDir, 'config');
 // Determine the environment (production or development)
-const nodeEnv = process.env.NODE_ENV || 'dev';
+const nodeEnv = process.env.NODE_ENV || 'development';
 
 // Choose the appropriate environment file based on NODE_ENV
-const envFile = nodeEnv === 'production' ? '.env.prod' : '.env.dev';
+const envFile =
+  nodeEnv === 'production' ? '.env.production' : '.env.development';
 const envPath = path.resolve(configDir, envFile);
 
 // Load environment variables from the determined path
@@ -30,8 +31,8 @@ export const AppDataSource = new DataSource({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   synchronize: false,
-  entities: ['**/*.entity.ts'],
-  migrations: ['src/migrations/*-migration.ts'],
+  entities: ['**/*.entity.js'],
+  migrations: ['dist/migrations/*-migration.js'],
   migrationsRun: false,
   logging: true,
 });
