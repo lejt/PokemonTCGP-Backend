@@ -36,7 +36,7 @@ import { InitialCardSeedModule } from './initial-card-seed/initial-card-seed.mod
             : false,
         entities: [Card, CardSet, Pack, UserCard, User],
         autoLoadEntities: true, // finds entity files and auto load them
-        synchronize: process.env.NODE_ENV === 'dev',
+        synchronize: process.env.NODE_ENV === 'development',
       }),
     }),
     ThrottlerModule.forRoot([

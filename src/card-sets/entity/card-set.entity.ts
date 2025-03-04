@@ -23,6 +23,9 @@ export class CardSet {
   @Column({ default: '' })
   symbol?: string;
 
+  @Column({ default: '' })
+  image?: string;
+
   @Column({ name: 'external_id', unique: true })
   externalId: string;
 

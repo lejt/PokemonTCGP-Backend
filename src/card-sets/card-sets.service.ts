@@ -37,10 +37,10 @@ export class CardSetsService {
         id: cs.id,
         name: cs.name,
         logo: cs.logo,
-        image: cs.logo, // TODO: replace with cardset image
+        image: cs.image,
         packs:
           cs.packs?.map((pack) => {
-            return { id: pack.id, image: pack.name }; // TODO: replace pack.name with pack image
+            return { id: pack.id, image: pack.image };
           }) || [],
       });
     });

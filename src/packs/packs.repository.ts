@@ -2,7 +2,7 @@ import { DataSource, ILike, Repository } from 'typeorm';
 import { Pack } from './entity/pack.entity';
 import { Injectable } from '@nestjs/common';
 import { CardSet } from '../card-sets/entity/card-set.entity';
-import { getGAPackName } from '../utils/pack-utils';
+import { getPackName } from '../utils/pack-utils';
 import { Card } from '../initial-card-seed/interface/external-data.interface';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class PacksRepository extends Repository<Pack> {
   }
 
   async findAndSavePack(card: Card, cardSet: CardSet): Promise<Pack> {
-    const packName = getGAPackName(card.id);
+    const packName = getPackName(card.id); // this id is card external ID from the external API
     if (!packName) return;
 
     await this.upsert(

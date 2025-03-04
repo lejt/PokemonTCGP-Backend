@@ -18,14 +18,8 @@ export class Pack {
   @Column({ unique: true })
   name: string;
 
-  // @Column({ default: '' })
-  // logo?: string;
-
-  // @Column({ default: '' })
-  // symbol?: string;
-
-  // @Column({ default: '' })
-  // image?: string;
+  @Column({ default: '' })
+  image?: string;
 
   @ManyToOne(() => CardSet, (cardSet) => cardSet.packs, { onDelete: 'CASCADE' })
   cardSet: CardSet;
