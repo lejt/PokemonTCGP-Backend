@@ -14,4 +14,7 @@ export const cardPreviewExternalIds = {
     Palkia: ['A2-204', 'A2-167', 'A2-190', 'A2-162', 'A2-125', 'A2-037'],
     Dialga: ['A2-205', 'A2-160', 'A2-179', 'A2-007', 'A2-095'],
   },
+  [CardSetNames.TRIUMPHANT_LIGHT]: {
+    default: ['A2a-010', 'A2a-047', 'A2a-057', 'A2a-071', 'A2a-072', 'A2a-075'],
+  },
 };

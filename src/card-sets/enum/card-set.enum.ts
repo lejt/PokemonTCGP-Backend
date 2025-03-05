@@ -3,4 +3,5 @@ export enum CardSetNames {
   PROMOS_A = 'Promos-A',
   MYTHICAL_ISLAND = 'Mythical Island',
   SPACE_TIME_SMACKDOWN = 'Space-Time Smackdown',
+  TRIUMPHANT_LIGHT = 'Triumphant Light',
 }

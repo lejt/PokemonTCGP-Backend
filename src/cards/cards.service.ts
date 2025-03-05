@@ -219,15 +219,17 @@ export class CardsService {
             cardPreviewExternalIds[CardSetNames.MYTHICAL_ISLAND].default;
           break;
         case CardSetNames.SPACE_TIME_SMACKDOWN:
+          if (pack.name.includes('Palkia')) {
+            cardExternalIds =
+              cardPreviewExternalIds[CardSetNames.SPACE_TIME_SMACKDOWN].Palkia;
+          } else if (pack.name.includes('Dialga')) {
+            cardExternalIds =
+              cardPreviewExternalIds[CardSetNames.SPACE_TIME_SMACKDOWN].Dialga;
+          }
+          break;
+        case CardSetNames.TRIUMPHANT_LIGHT:
           cardExternalIds =
-            cardPreviewExternalIds[CardSetNames.SPACE_TIME_SMACKDOWN].Palkia;
-
-          // TODO: add this when this cardset is divided into packs
-          // if (pack.name.includes('Palkia')) {
-          //   cardIds = cardPreviewIds[CardSetNames.SPACE_TIME_SMACKDOWN].Palkia;
-          // } else if (pack.name.includes('Dialga')) {
-          //   cardIds = cardPreviewIds[CardSetNames.SPACE_TIME_SMACKDOWN].Dialga;
-          // }
+            cardPreviewExternalIds[CardSetNames.TRIUMPHANT_LIGHT].default;
           break;
       }
 
