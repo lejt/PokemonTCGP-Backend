@@ -71,7 +71,7 @@ export class CardsRepository extends Repository<Card> {
             name: card.name,
             image: card?.image,
             hp: card?.hp,
-            types: card?.types,
+            types: card?.types, // Pokemon cards have one type but data structure is array
             stage: card?.stage,
             rarity: card.rarity,
             suffix: card?.suffix,
